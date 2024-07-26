@@ -3,9 +3,9 @@ const { check, validationResult } = require("express-validator");
 // Validation and sanitization function
 const validateAndSanitizeData = async (data) => {
   const errors = [];
-
+  let req = { body: data };
   // Validation rules
-  await check("legalAgreement")
+  /*await check("legalAgreement")
     .exists()
     .withMessage("Agreement to legal disclaimer is required.")
     .isBoolean()
@@ -36,14 +36,14 @@ const validateAndSanitizeData = async (data) => {
     .trim()
     .escape()
     .run(data);
-
-  await check("pH")
+*/
+  await check("data.pH")
     .exists()
     .withMessage("pH is required.")
     .isFloat()
     .withMessage("pH must be a float.")
-    .run(data);
-
+    .run(req);
+  /*
   await check("bicarbonate")
     .optional()
     .isFloat()
@@ -173,7 +173,7 @@ const validateAndSanitizeData = async (data) => {
     .trim()
     .escape()
     .run(data);
-
+*/
   const result = validationResult(data);
   if (!result.isEmpty()) {
     errors.push(...result.array().map((err) => err.msg));
@@ -181,10 +181,10 @@ const validateAndSanitizeData = async (data) => {
   }
 
   // Proceed with the sanitized and validated data
-  data.legalAgreement = Boolean(data.legalAgreement);
-  data.patientAge = parseInt(data.patientAge, 10);
+  /*data.legalAgreement = Boolean(data.legalAgreement);
+  data.patientAge = parseInt(data.patientAge, 10);*/
   data.pH = parseFloat(data.pH);
-  if (data.bicarbonate !== undefined)
+  /*if (data.bicarbonate !== undefined)
     data.bicarbonate = parseFloat(data.bicarbonate);
   if (data.glucose !== undefined) data.glucose = parseFloat(data.glucose);
   if (data.ketones !== undefined) data.ketones = parseFloat(data.ketones);
@@ -195,6 +195,7 @@ const validateAndSanitizeData = async (data) => {
   data.weightLimitOverride = Boolean(data.weightLimitOverride);
 
   const preventableFactorsJSON = JSON.stringify(data.preventableFactors);
+  */
 
   return { data, isValid: true };
 };

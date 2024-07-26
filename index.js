@@ -13,23 +13,31 @@ const { validateAndSanitizeData } = require("./validateAndSanitizeData");
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("This API does not accept GET requests");
+  res.send(
+    "Please go to <a href='https://dka-calculator.co.uk/'>https://dka-calculator.co.uk</a> instead."
+  );
 });
 
+function test(res) {
+  res.send("test send");
+}
+
 app.post("/", async (req, res) => {
-  res.send(
-    "This is where I've got to - this message is received and displayed in the error message of the generateProtocol screen."
-  );
-  return; //without a later error causes the express app to crash
   try {
     if (!req.body.data) {
-      return sendErrorResponse(res, "No data received.", 400);
+      sendErrorResponse("No data received.", 400, res);
     }
-
-    const data = req.body.data;
-    validateAndSanitizeData(data);
+    const data = JSON.parse(req.body.data);
+    data.pH = "fail";
+    console.log(1, "pH:", data.pH);
+    const validation = validateAndSanitizeData(data);
+    console.log(2, "validation:", await validation);
+    res.json(validation);
+    console.log(3);
+    return;
 
     let patientHash;
     if (data.patientHash) {

@@ -12,8 +12,7 @@ function handleError(error, req, res, next) {
 
 // Middleware for sending custom error responses
 function sendErrorResponse(msg, status, res) {
-  //res.status(status).json({ message: msg });
-  res.send("sendErrorResponse");
+  res.status(status).json({ message: msg });
 }
 
 module.exports = { handleError, sendErrorResponse };
