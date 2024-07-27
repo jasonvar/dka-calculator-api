@@ -1,28 +1,77 @@
-const { check, validationResult } = require("express-validator");
+const { check, body, validationResult } = require("express-validator");
 const config = require("./config.json");
 
-const validationRules = [
+const fetchCalculationsValidationRules = [
   check("legalAgreement")
     .isBoolean()
     .withMessage("Legal agreement field must be data type [boolean].")
+    .bail() // Stop running validations if any of the previous ones have failed.
     .equals("true")
     .withMessage("You must agree to the legal disclaimer."),
+
+  check("patientAge")
+    .custom((value) => {
+      //use custom validator as isFloat will accept numbers with string datatype
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error("Patient age field must be data type [integer].");
+      }
+      return true;
+    })
+    .bail()
+    .isInt({
+      min: 0,
+      max: 18,
+    })
+    .withMessage("Patient age must be an integer in the range 0 to 18."),
 
   check("patientSex")
     .isString()
     .withMessage("Patient sex field must be data type [string].")
+    .bail()
     .custom((value) => ["male", "female"].includes(value))
     .withMessage("Patient sex must be male or female."),
 
+  check("patientHash")
+    .optional()
+    .isAlphanumeric()
+    .withMessage(
+      "If provided, patient hash field must be data type [string], containing alphanumeric characters only."
+    )
+    .bail()
+    .isLength({ min: 64, max: 64 })
+    .withMessage(
+      "If provided, patient hash field must be exactly 64 characters in length."
+    ),
+
   check("patientPostcode")
     .optional()
-    .isString()
-    .withMessage("Patient postcode field must be data type [string].")
+    .isAlphanumeric()
+    .withMessage(
+      "Patient postcode field must be data type [string], containing alphanumeric characters only."
+    )
+    .bail()
     .matches(
       /^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})$/
     )
-    .withMessage("Patient postcode must be a valid UK postcode.")
-    .escape(),
+    .withMessage("Patient postcode must be a valid UK postcode."),
+
+  check("protocolStartDatetime")
+    .isISO8601() // Validates the input as an ISO 8601 date
+    .withMessage("Protocol start datetime must be ISO8601 date format.")
+    .bail()
+    .custom((value) => {
+      const datetime = new Date(value);
+      const now = new Date();
+      const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+      if (datetime < twentyFourHoursAgo || datetime > now) {
+        throw new Error(
+          "Protocol start datetime must be within the last 24 hours."
+        );
+      }
+
+      return true;
+    }),
 
   check("pH")
     .custom((value) => {
@@ -32,6 +81,7 @@ const validationRules = [
       }
       return true;
     })
+    .bail()
     .isFloat({
       min: config.severity.severe.pHRange.lower,
       max: config.severity.mild.pHRange.upper,
@@ -40,14 +90,161 @@ const validationRules = [
       `pH must be in range ${config.severity.severe.pHRange.lower} to ${config.severity.mild.pHRange.upper}.`
     ),
 
+  check("bicarbonate")
+    .optional()
+    .custom((value) => {
+      //use custom validator as isFloat will accept numbers with string datatype
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error(
+          "If provided, bicarbonate field must be data type [float]."
+        );
+      }
+      return true;
+    })
+    .bail()
+    .isFloat({
+      min: 0,
+      max: 35,
+    })
+    .withMessage("If provided, bicarbonate must be in range 0 to 35."),
+
+  check("glucose")
+    .optional()
+    .custom((value) => {
+      //use custom validator as isFloat will accept numbers with string datatype
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error(
+          "If provided, glucose field must be data type [float]."
+        );
+      }
+      return true;
+    })
+    .bail()
+    .isFloat({
+      min: 3,
+      max: 50,
+    })
+    .withMessage("If provided, glucose must be in range 3 to 50."),
+
+  check("ketones")
+    .optional()
+    .custom((value) => {
+      //use custom validator as isFloat will accept numbers with string datatype
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error(
+          "If provided, ketones field must be data type [float]."
+        );
+      }
+      return true;
+    })
+    .bail()
+    .isFloat({
+      min: 0,
+      max: 10,
+    })
+    .withMessage("If provided, ketones must be in range 3 to 50."),
+
   check("weight")
     .isFloat({ min: 2, max: 150 })
     .withMessage("Weight must be a valid number between 2 and 150."),
+
+  check("weightLimitOverride")
+    .isBoolean()
+    .withMessage("Weight limit override field must be data type [boolean]."),
+
+  check("shockPresent")
+    .isBoolean()
+    .withMessage("Clinical shock status field must be data type [boolean]."),
+
+  check("insulinRate")
+    .isFloat()
+    .withMessage("Insulin rate field must be data type [float].")
+    .bail()
+    .custom((value) => [0.05, 0.1].includes(value))
+    .withMessage("Insulin rate must be 0.05 or 0.1."),
+
+  check("preExistingDiabetes")
+    .isBoolean()
+    .withMessage(
+      "Pre-existing diabetes status field must be data type [boolean]."
+    ),
+
+  check("insulinDeliveryMethod")
+    .if(body("preExistingDiabetes").equals("true"))
+    .isAlpha()
+    .withMessage(
+      "Insulin delivery method field must be data type [string], containing only alpha characters."
+    )
+    .bail()
+    .custom((value) => ["pen", "pump"].includes(value))
+    .withMessage("Insulin delivery method must be pen or pump."),
+
+  check("insulinDeliveryMethod")
+    .if(body("preExistingDiabetes").equals("false"))
+    .equals("")
+    .withMessage(
+      "Insulin delivery method must be blank if pre-existing diabetes status is false."
+    ),
+
+  check("episodeType")
+    .isAlpha()
+    .withMessage(
+      "Episode type field must be data type [string], containing only alpha characters."
+    )
+    .bail()
+    .custom((value) => ["real", "test"].includes(value))
+    .withMessage("Episode type must be real or test."),
+
+  check("region")
+    .isString()
+    .withMessage("Region field must be data type [string].")
+    .escape(),
+
+  check("centre")
+    .isString()
+    .withMessage("Treating centre field must be data type [string].")
+    .escape(),
+
+  check("ethnicGroup")
+    .isString()
+    .withMessage("Ethnic group field must be data type [string].")
+    .escape(),
+
+  check("ethnicSubgroup")
+    .isString()
+    .withMessage("Ethnic subgroup field must be data type [string].")
+    .escape(),
+
+  check("preventableFactors")
+    .isArray()
+    .withMessage("Preventable factors field must be data type [array].")
+    .bail()
+    .custom((array) =>
+      array.every(
+        (item) => typeof item === "string" && /^[a-zA-Z0-9]+$/.test(item)
+      )
+    )
+    .withMessage(
+      "Each preventable factor must be data type [string], containing alphanumeric characters only."
+    ),
+
+  check("appVersion")
+    .isString()
+    .withMessage("App version field must be data type [string].")
+    .escape(),
+
+  check("clientDatetime")
+    .isISO8601() // Validates the input as an ISO 8601 date
+    .withMessage("Client datetime must be ISO8601 date format."),
+
+  check("clientUseragent")
+    .isString()
+    .withMessage("Client useragent field must be data type [string].")
+    .escape(),
 ];
 
 // Middleware function to validate the request
 const validateRequest = (req, res, next) => {
-  console.log(req.body.legalAgreement);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -55,202 +252,4 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-module.exports = { validationRules, validateRequest };
-
-/* Validation and sanitization function
-const validateAndSanitize = async (data) => {
-  const errors = [];
-  let req = { body: data };
-  // Validation rules
- 
-
-  await check("patientAge")
-    .exists()
-    .withMessage("Patient age is required.")
-    .isInt()
-    .withMessage("Patient age must be an integer.")
-    .run(data);
-
-  await check("patientSex")
-    .exists()
-    .withMessage("Patient sex is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("patientHash").optional().trim().escape().run(data);
-
-  await check("patientPostcode").optional().trim().escape().run(data);
-
-  await check("protocolStartDatetime")
-    .exists()
-    .withMessage("Protocol start datetime is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("data.pH")
-    .exists()
-    .withMessage("pH is required.")
-    .isFloat()
-    .withMessage("pH must be a float.")
-    .run(req);
-  /*
-  await check("bicarbonate")
-    .optional()
-    .isFloat()
-    .withMessage("Bicarbonate must be a float.")
-    .run(data);
-
-  await check("glucose")
-    .optional()
-    .isFloat()
-    .withMessage("Glucose must be a float.")
-    .run(data);
-
-  await check("ketones")
-    .optional()
-    .isFloat()
-    .withMessage("Ketones must be a float.")
-    .run(data);
-
-  await check("weight")
-    .exists()
-    .withMessage("Weight is required.")
-    .isFloat()
-    .withMessage("Weight must be a float.")
-    .run(data);
-
-  await check("shockPresent")
-    .exists()
-    .withMessage("Clinical shock status is required.")
-    .isBoolean()
-    .withMessage("Clinical shock status must be a boolean.")
-    .run(data);
-
-  await check("insulinRate")
-    .exists()
-    .withMessage("Insulin rate is required.")
-    .isFloat()
-    .withMessage("Insulin rate must be a float.")
-    .run(data);
-
-  await check("preExistingDiabetes")
-    .exists()
-    .withMessage("Pre-existing diabetes status is required.")
-    .isBoolean()
-    .withMessage("Pre-existing diabetes status must be a boolean.")
-    .run(data);
-
-  await check("insulinDeliveryMethod")
-    .if(check("preExistingDiabetes").isBoolean().equals("true"))
-    .exists()
-    .withMessage("Insulin delivery method is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("episodeType")
-    .exists()
-    .withMessage("Episode type is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("region")
-    .exists()
-    .withMessage("Region is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("centre")
-    .exists()
-    .withMessage("Centre is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("ethnicGroup")
-    .exists()
-    .withMessage("Ethnic group is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("ethnicSubgroup")
-    .exists()
-    .withMessage("Ethnic subgroup is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("preventableFactors")
-    .exists()
-    .withMessage("Preventable factors selection is required.")
-    .isArray({ min: 1 })
-    .withMessage(
-      "Preventable factors must be an array with at least one element."
-    )
-    .custom((value) => value.every((factor) => typeof factor === "string"))
-    .withMessage("Each preventable factor must be a string.")
-    .bail()
-    .customSanitizer((value) => value.map((factor) => factor.trim()))
-    .run(data);
-
-  await check("weightLimitOverride")
-    .exists()
-    .withMessage("Weight limit override status is required.")
-    .isBoolean()
-    .withMessage("Weight limit override status must be a boolean.")
-    .run(data);
-
-  await check("appVersion")
-    .exists()
-    .withMessage("App version is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("clientDatetime")
-    .exists()
-    .withMessage("Client datetime is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  await check("clientUseragent")
-    .exists()
-    .withMessage("Client useragent is required.")
-    .trim()
-    .escape()
-    .run(data);
-
-  const result = validationResult(data);
-  if (!result.isEmpty()) {
-    errors.push(...result.array().map((err) => err.msg));
-    return { errors, isValid: false };
-  }
-
-  // Proceed with the sanitized and validated data
-  /*data.legalAgreement = Boolean(data.legalAgreement);
-  data.patientAge = parseInt(data.patientAge, 10);
-data.pH = parseFloat(data.pH);
-/*if (data.bicarbonate !== undefined)
-    data.bicarbonate = parseFloat(data.bicarbonate);
-  if (data.glucose !== undefined) data.glucose = parseFloat(data.glucose);
-  if (data.ketones !== undefined) data.ketones = parseFloat(data.ketones);
-  data.weight = parseFloat(data.weight);
-  data.shockPresent = Boolean(data.shockPresent);
-  data.insulinRate = parseFloat(data.insulinRate);
-  data.preExistingDiabetes = Boolean(data.preExistingDiabetes);
-  data.weightLimitOverride = Boolean(data.weightLimitOverride);
-
-  const preventableFactorsJSON = JSON.stringify(data.preventableFactors);
-  
-
-  return { data, isValid: true };
-};
-
-module.exports = { validateAndSanitizeData };
-*/
+module.exports = { fetchCalculationsValidationRules, validateRequest };

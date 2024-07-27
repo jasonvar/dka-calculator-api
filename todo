@@ -1,0 +1,1 @@
+Move the client config file to the server, set up an API route to fetch it on app load, use it to remove hardcoded variables from validateAndSanitize. This should create a single point of truth for input validation variables in the whole web app system.

@@ -5,7 +5,10 @@ const crypto = require("crypto");
 const mysql = require("mysql");
 const { handleError, sendErrorResponse } = require("./errorHandlers");
 const { matchedData } = require("express-validator");
-const { validationRules, validateRequest } = require("./validateAndSanitize");
+const {
+  fetchCalculationsValidationRules,
+  validateRequest,
+} = require("./validateAndSanitize");
 //const { keys } = require("./private/keys");
 //const { performCalculations } = require("./calculations");
 //const { generateAuditID } = require("./generateAuditID");
@@ -23,7 +26,7 @@ app.get("/", (req, res) => {
 
 app.post(
   "/fetchCalculations",
-  validationRules,
+  fetchCalculationsValidationRules,
   validateRequest,
   async (req, res) => {
     try {
