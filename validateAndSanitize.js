@@ -1,16 +1,68 @@
 const { check, validationResult } = require("express-validator");
+const config = require("./config.json");
 
-// Validation and sanitization function
-const validateAndSanitizeData = async (data) => {
+const validationRules = [
+  check("legalAgreement")
+    .isBoolean()
+    .withMessage("Legal agreement field must be data type [boolean].")
+    .equals("true")
+    .withMessage("You must agree to the legal disclaimer."),
+
+  check("patientSex")
+    .isString()
+    .withMessage("Patient sex field must be data type [string].")
+    .custom((value) => ["male", "female"].includes(value))
+    .withMessage("Patient sex must be male or female."),
+
+  check("patientPostcode")
+    .optional()
+    .isString()
+    .withMessage("Patient postcode field must be data type [string].")
+    .matches(
+      /^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})$/
+    )
+    .withMessage("Patient postcode must be a valid UK postcode.")
+    .escape(),
+
+  check("pH")
+    .custom((value) => {
+      //use custom validator as isFloat will accept numbers with string datatype
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error("pH field must be data type [float].");
+      }
+      return true;
+    })
+    .isFloat({
+      min: config.severity.severe.pHRange.lower,
+      max: config.severity.mild.pHRange.upper,
+    })
+    .withMessage(
+      `pH must be in range ${config.severity.severe.pHRange.lower} to ${config.severity.mild.pHRange.upper}.`
+    ),
+
+  check("weight")
+    .isFloat({ min: 2, max: 150 })
+    .withMessage("Weight must be a valid number between 2 and 150."),
+];
+
+// Middleware function to validate the request
+const validateRequest = (req, res, next) => {
+  console.log(req.body.legalAgreement);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
+
+module.exports = { validationRules, validateRequest };
+
+/* Validation and sanitization function
+const validateAndSanitize = async (data) => {
   const errors = [];
   let req = { body: data };
   // Validation rules
-  /*await check("legalAgreement")
-    .exists()
-    .withMessage("Agreement to legal disclaimer is required.")
-    .isBoolean()
-    .withMessage("Agreement to legal disclaimer must be a boolean.")
-    .run(data);
+ 
 
   await check("patientAge")
     .exists()
@@ -36,7 +88,7 @@ const validateAndSanitizeData = async (data) => {
     .trim()
     .escape()
     .run(data);
-*/
+
   await check("data.pH")
     .exists()
     .withMessage("pH is required.")
@@ -173,7 +225,7 @@ const validateAndSanitizeData = async (data) => {
     .trim()
     .escape()
     .run(data);
-*/
+
   const result = validationResult(data);
   if (!result.isEmpty()) {
     errors.push(...result.array().map((err) => err.msg));
@@ -182,9 +234,9 @@ const validateAndSanitizeData = async (data) => {
 
   // Proceed with the sanitized and validated data
   /*data.legalAgreement = Boolean(data.legalAgreement);
-  data.patientAge = parseInt(data.patientAge, 10);*/
-  data.pH = parseFloat(data.pH);
-  /*if (data.bicarbonate !== undefined)
+  data.patientAge = parseInt(data.patientAge, 10);
+data.pH = parseFloat(data.pH);
+/*if (data.bicarbonate !== undefined)
     data.bicarbonate = parseFloat(data.bicarbonate);
   if (data.glucose !== undefined) data.glucose = parseFloat(data.glucose);
   if (data.ketones !== undefined) data.ketones = parseFloat(data.ketones);
@@ -195,9 +247,10 @@ const validateAndSanitizeData = async (data) => {
   data.weightLimitOverride = Boolean(data.weightLimitOverride);
 
   const preventableFactorsJSON = JSON.stringify(data.preventableFactors);
-  */
+  
 
   return { data, isValid: true };
 };
 
 module.exports = { validateAndSanitizeData };
+*/

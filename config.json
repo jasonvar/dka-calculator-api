@@ -1,0 +1,40 @@
+{
+  "severity": {
+    "severe": {
+      "pHRange": {
+        "upper": 7.1,
+        "lower": 6.5
+      },
+      "bicarbonateBelow": 5,
+      "deficitPercentage": 10
+    },
+    "moderate": {
+      "pHRange": {
+        "upper": 7.2,
+        "lower": 7.1
+      },
+      "bicarbonateBelow": 10,
+      "deficitPercentage": 5
+    },
+    "mild": {
+      "pHRange": {
+        "upper": 7.3,
+        "lower": 7.2
+      },
+      "bicarbonateBelow": 15,
+      "deficitPercentage": 5
+    }
+  },
+  "caps": {
+    "weight": 75,
+    "maintenance": 2600,
+    "deficit10": 7500,
+    "deficit5": 3750,
+    "bolus": 750,
+    "insulin01": 7.5,
+    "insulin005": 3.75
+  },
+  "bolusMlsPerKg": 10,
+  "deficitReplacementDuration": 48,
+  "minimumKetones": 3
+}
