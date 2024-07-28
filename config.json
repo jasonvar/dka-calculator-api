@@ -31,10 +31,14 @@
     "deficit10": 7500,
     "deficit5": 3750,
     "bolus": 750,
+    "glucoseBolus": 150,
+    "hhsBolus": 1500,
     "insulin01": 7.5,
     "insulin005": 3.75
   },
   "bolusMlsPerKg": 10,
+  "glucoseBolusMlsPerKg": 2,
+  "hhsBolusMlsPerKg": 20,
   "deficitReplacementDuration": 48,
   "minimumKetones": 3
 }

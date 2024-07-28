@@ -1,7 +1,7 @@
 const { check, body, validationResult } = require("express-validator");
 const config = require("./config.json");
 
-const fetchCalculationsValidationRules = [
+const calculateRules = [
   check("legalAgreement")
     .isBoolean()
     .withMessage("Legal agreement field must be data type [boolean].")
@@ -83,12 +83,10 @@ const fetchCalculationsValidationRules = [
     })
     .bail()
     .isFloat({
-      min: config.severity.severe.pHRange.lower,
-      max: config.severity.mild.pHRange.upper,
+      min: 6.5,
+      max: 7.5,
     })
-    .withMessage(
-      `pH must be in range ${config.severity.severe.pHRange.lower} to ${config.severity.mild.pHRange.upper}.`
-    ),
+    .withMessage(`pH must be in range 6.5 to 7.5.`),
 
   check("bicarbonate")
     .optional()
@@ -252,4 +250,4 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-module.exports = { fetchCalculationsValidationRules, validateRequest };
+module.exports = { calculateRules, validateRequest };
