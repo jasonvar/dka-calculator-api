@@ -6,9 +6,10 @@ const mysql = require("mysql");
 const { matchedData } = require("express-validator");
 const { validateRequest, calculateRules } = require("./validateAndSanitize");
 const keys = require("./private/keys.json");
-const { performCalculations } = require("./performCalculations");
-//const { generateAuditID } = require("./generateAuditID");
-//const { databaseInsert } = require("./databaseInsert");
+const { calculateVariables } = require("./calculateVariables");
+const { generateAuditID } = require("./generateAuditID");
+const { insertAuditData } = require("./insertAuditData");
+const { getImdDecile } = require("./getImdDecile");
 
 const app = express();
 app.use(cors());
@@ -23,49 +24,50 @@ app.get("/", (req, res) => {
 app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
   try {
     const data = matchedData(req);
-    const response = {};
-
-    let patientHash;
-    if (data.patientHash) {
-      patientHash = crypto
-        .createHash("sha256")
-        .update(data.patientHash + keys.salt)
-        .digest("hex");
-    }
 
     const clientIP = req.ip;
 
-    const calculations = performCalculations(data);
+    const calculations = calculateVariables(data);
     if (calculations.errors.length) {
       res.status(400).json({ errors: calculations.errors });
       return;
     }
 
-    console.log(calculations);
-    res.json("pass");
-    return;
+    data.bicarbonate = data.bicarbonate || null;
+    data.glucose = data.glucose || null;
+    data.ketones = data.ketones || null;
 
-    const connection = mysql.createConnection({
-      host: "localhost",
-      user: keys.username,
-      password: keys.password,
-      database: "dkacalcu_dka_database",
-    });
+    rehashPatientHash = (patientHash) =>
+      crypto
+        .createHash("sha256")
+        .update(patientHash + keys.salt)
+        .digest("hex");
+    const patientHash = data.patientHash
+      ? rehashPatientHash(data.patientHash)
+      : null;
 
-    connection.connect();
+    const imdDecile = data.patientPostcode
+      ? await getImdDecile(data.patientPostcode)
+      : null;
 
-    const auditID = await generateAuditID(connection);
+    const auditID = await generateAuditID();
 
-    await databaseInsert(connection, auditID, data, calculations, clientIP);
-
-    connection.end();
+    await insertAuditData(
+      data,
+      imdDecile,
+      auditID,
+      patientHash,
+      clientIP,
+      calculations
+    );
 
     res.json({
-      auditID: auditID,
-      calculations: calculations,
+      auditID,
+      calculations,
     });
   } catch (error) {
     console.error(error);
+    res.status(500).json(error.message);
   }
 });
 
