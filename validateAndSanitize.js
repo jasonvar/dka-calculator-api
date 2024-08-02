@@ -1,5 +1,9 @@
 const { check, body, validationResult } = require("express-validator");
 
+/**
+ * Validation rules for the calculate route.
+ * @type {Array}
+ */
 const calculateRules = [
   check("legalAgreement")
     .isBoolean()
