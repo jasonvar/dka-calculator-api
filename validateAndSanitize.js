@@ -1,5 +1,4 @@
 const { check, body, validationResult } = require("express-validator");
-const config = require("./config.json");
 
 const calculateRules = [
   check("legalAgreement")

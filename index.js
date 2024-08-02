@@ -2,7 +2,6 @@ const express = require("express");
 var cors = require("cors");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
-const mysql = require("mysql");
 const { matchedData } = require("express-validator");
 const { validateRequest, calculateRules } = require("./validateAndSanitize");
 const keys = require("./private/keys.json");
