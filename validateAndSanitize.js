@@ -218,11 +218,11 @@ const calculateRules = [
     .bail()
     .custom((array) =>
       array.every(
-        (item) => typeof item === "string" && /^[a-zA-Z0-9]+$/.test(item)
+        (item) => typeof item === "string" && /^[a-zA-Z0-9 /]+$/.test(item)
       )
     )
     .withMessage(
-      "Each preventable factor must be data type [string], containing alphanumeric characters only."
+      "Each preventable factor must be data type [string], containing alphanumeric characters and forward slash only."
     ),
 
   check("appVersion")
