@@ -32,7 +32,8 @@ const calculateVariables = (data) => {
 
       if (
         (data.pH < pHRange.upper && data.pH >= pHRange.lower) ||
-        (data.bicarbonate !== undefined && data.bicarbonate < bicarbonateBelow)
+        (typeof data.bicarbonate !== undefined &&
+          data.bicarbonate < bicarbonateBelow)
       ) {
         return levelConfig.severity;
       }
@@ -56,13 +57,9 @@ const calculateVariables = (data) => {
     }
 
     // Log error if no valid severity is found
-    errors.push(
-      `pH of ${data.pH.toFixed(
-        2
-      )} and bicarbonate of ${data.bicarbonate.toFixed(
-        1
-      )} mmol/L does not meet the diagnostic threshold for DKA.`
-    );
+    errors.push({
+      msg: `pH of ${data.pH} and bicarbonate of ${data.bicarbonate} mmol/L does not meet the diagnostic threshold for DKA.`,
+    });
     return false;
   };
   const severity = calculateSeverity();
@@ -132,9 +129,9 @@ const calculateVariables = (data) => {
         if (severityMap.hasOwnProperty(severity)) {
           return severityMap[severity];
         } else {
-          errors.push(
-            `Unable to select deficit percentage using severity rating [${severity}]`
-          );
+          errors.push({
+            msg: `Unable to select deficit percentage using severity rating [${severity}]`,
+          });
           return false;
         }
       };
@@ -190,9 +187,9 @@ const calculateVariables = (data) => {
         if (capsMap.hasOwnProperty(percentage.val)) {
           return capsMap[percentage.val];
         } else {
-          errors.push(
-            `Unable to select deficit volume cap using deficit percentage [${percentage.val}].`
-          );
+          errors.push({
+            msg: `Unable to select deficit volume cap using deficit percentage [${percentage.val}].`,
+          });
           return false;
         }
       };
@@ -217,9 +214,9 @@ const calculateVariables = (data) => {
             percentage.val
           }% deficit)`;
         } else {
-          errors.push(
-            `Unable to generate deficit volume limit string using deficit percentage [${percentage.val}].`
-          );
+          errors.push({
+            msg: `Unable to generate deficit volume limit string using deficit percentage [${percentage.val}].`,
+          });
           return false;
         }
       };
@@ -455,9 +452,9 @@ const calculateVariables = (data) => {
       if (insulinCapsMap.hasOwnProperty(data.insulinRate)) {
         return insulinCapsMap[data.insulinRate];
       } else {
-        errors.push(
-          `Unable to select insulin rate capped using insulin rate [${data.insulinRate}].`
-        );
+        errors.push({
+          msg: `Unable to select insulin rate capped using insulin rate [${data.insulinRate}].`,
+        });
         return false;
       }
     };
