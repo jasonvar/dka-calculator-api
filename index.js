@@ -13,6 +13,7 @@ const { calculateVariables } = require("./calculateVariables");
 const { generateAuditID } = require("./generateAuditID");
 const { insertCalculateData, updateData } = require("./insertData");
 const { getImdDecile } = require("./getImdDecile");
+const { updateCheck } = require("./updateCheck");
 
 const app = express();
 app.use(cors());
@@ -102,6 +103,16 @@ app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
 app.post("/update", updateRules, validateRequest, async (req, res) => {
   try {
     const data = matchedData(req);
+
+    const check = updateCheck(data.auditID);
+
+    if (check.patientHash != data.patientHash) {
+      res
+        .status(401)
+        .json(
+          `Patient NHS number or date of birth do not match for episode with audit ID: ${data.auditID}`
+        );
+    }
 
     await updateData(data);
 

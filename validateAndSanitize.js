@@ -258,6 +258,16 @@ const updateRules = [
     .isLength({ min: 6, max: 6 })
     .withMessage("Audit ID field must be exactly 6 characters in length."),
 
+  check("patientHash")
+    .optional()
+    .isAlphanumeric()
+    .withMessage(
+      "Patient hash field must be data type [string], containing alphanumeric characters only."
+    )
+    .bail()
+    .isLength({ min: 64, max: 64 })
+    .withMessage("Patient hash field must be exactly 64 characters in length."),
+
   check("preventableFactors")
     .isArray()
     .withMessage("Preventable factors field must be data type [array].")
