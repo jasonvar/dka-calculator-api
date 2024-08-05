@@ -42,6 +42,13 @@ async function generateAuditID() {
   return auditID;
 }
 
+/**
+ * Generates a random ID of specified length using permitted characters.
+ *
+ * @param {number} length - The length of the random ID to generate.
+ * @param {string} permittedChars - A string containing the characters that are permitted in the ID.
+ * @returns {string} - The generated random ID.
+ */
 function generateRandomID(length, permittedChars) {
   let result = "";
   for (let i = 0; i < length; i++) {

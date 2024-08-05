@@ -244,6 +244,34 @@ const calculateRules = [
     .escape(),
 ];
 
+/**
+ * Validation rules for the update route.
+ * @type {Array}
+ */
+const updateRules = [
+  check("auditID")
+    .isAlphanumeric()
+    .withMessage(
+      "Audit ID field must be data type [string], containing alphanumeric characters only."
+    )
+    .bail()
+    .isLength({ min: 6, max: 6 })
+    .withMessage("Audit ID field must be exactly 6 characters in length."),
+
+  check("preventableFactors")
+    .isArray()
+    .withMessage("Preventable factors field must be data type [array].")
+    .bail()
+    .custom((array) =>
+      array.every(
+        (item) => typeof item === "string" && /^[a-zA-Z0-9 /]+$/.test(item)
+      )
+    )
+    .withMessage(
+      "Each preventable factor must be data type [string], containing alphanumeric characters and forward slash only."
+    ),
+];
+
 // Middleware function to validate the request
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
@@ -253,4 +281,4 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-module.exports = { calculateRules, validateRequest };
+module.exports = { calculateRules, updateRules, validateRequest };

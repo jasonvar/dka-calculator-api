@@ -11,7 +11,7 @@ const keys = require("./private/keys.json");
  * @param {Object} calculations - Output of calculateVariables.
  * @throws {Error} If an error occurs during the database operation.
  */
-async function insertAuditData(
+async function insertCalculateData(
   data,
   imdDecile,
   auditID,
@@ -83,6 +83,49 @@ async function insertAuditData(
   }
 }
 
+/**
+ * Updates the preventableFactors audit data in the database.
+ * @param {Object} data - The submitted data including the auditID of the session and the updated preventableFactors array to be inserted.
+ * @throws {Error} If an error occurs during the database operation.
+ */
+async function updateData(data) {
+  try {
+    const connection = await mysql.createConnection({
+      host: "localhost",
+      user: keys.user,
+      password: keys.password,
+      database: "dkacalcu_dka_database",
+    });
+
+    // Prepare SQL statement for update
+    const sql = `
+      UPDATE tbl_data_v2
+      SET preventableFactors = ?
+      WHERE auditID = ?
+    `;
+
+    // Execute SQL statement
+    const [result] = await connection.execute(sql, [
+      data.preventableFactors,
+      data.auditID,
+    ]);
+
+    if (result.affectedRows === 0) {
+      throw new Error("Audit data could not be updated: No rows affected");
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error(`Audit data could not be updated: ${error.message}`);
+  } finally {
+    try {
+      await connection.end();
+    } catch {
+      //no connection to close
+    }
+  }
+}
+
 module.exports = {
-  insertAuditData,
+  insertCalculateData,
+  updateData,
 };
