@@ -20,6 +20,17 @@ app.use(cors());
 app.use(bodyParser.json());
 
 /**
+ * Rehashes the patient hash with salt.
+ * @param {string} patientHash - The original patient hash.
+ * @returns {string} - The rehashed patient hash.
+ */
+const rehashPatientHash = (patientHash) =>
+  crypto
+    .createHash("sha256")
+    .update(patientHash + keys.salt)
+    .digest("hex");
+
+/**
  * Any browser GET requests redirects to the main website.
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
@@ -52,17 +63,6 @@ app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
     data.bicarbonate = data.bicarbonate || null;
     data.glucose = data.glucose || null;
     data.ketones = data.ketones || null;
-
-    /**
-     * Rehashes the patient hash with salt.
-     * @param {string} patientHash - The original patient hash.
-     * @returns {string} - The rehashed patient hash.
-     */
-    const rehashPatientHash = (patientHash) =>
-      crypto
-        .createHash("sha256")
-        .update(patientHash + keys.salt)
-        .digest("hex");
 
     const patientHash = data.patientHash
       ? rehashPatientHash(data.patientHash)
@@ -105,8 +105,9 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
     const data = matchedData(req);
 
     const check = updateCheck(data.auditID);
+    const patientHash = rehashPatientHash(data.patientHash);
 
-    if (check.patientHash != data.patientHash) {
+    if (check.patientHash != patientHash) {
       res
         .status(401)
         .json(
