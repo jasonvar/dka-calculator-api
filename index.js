@@ -19,6 +19,10 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+//required to get the client IP address as server behind proxy
+app.set('trust proxy', 1);
+
+
 /**
  * Rehashes the patient hash with salt.
  * @param {string} patientHash - The original patient hash.
