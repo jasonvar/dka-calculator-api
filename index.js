@@ -117,10 +117,20 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
         res
         .status(404)
         .json(
-          `Audit ID not found in database: ${data.auditID}`
+          `Audit ID [${data.auditID}] not found in database`
         );
       return
     }
+
+    //check the episode has a patientHash
+    if (!check.patientHash) {
+      res
+      .status(406)
+      .json(
+        `The episode matching the audit ID [${data.auditID}] was created without providing an NHS number. Retrospective audit data updates are therefore not accepted.`
+      );
+    return
+  }
     
     //perform the second step hash before checking patientHash matches
     const patientHash = rehashPatientHash(data.patientHash);
