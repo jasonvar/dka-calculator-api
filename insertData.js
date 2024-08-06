@@ -22,8 +22,8 @@ async function insertCalculateData(
   try {
     const connection = await mysql.createConnection({
       host: "localhost",
-      user: keys.user,
-      password: keys.password,
+      user: keys.insert.user,
+      password: keys.insert.password,
       database: "dkacalcu_dka_database",
     });
 
@@ -92,21 +92,22 @@ async function updateData(data) {
   try {
     const connection = await mysql.createConnection({
       host: "localhost",
-      user: keys.user,
-      password: keys.password,
+      user: keys.update.user,
+      password: keys.update.password,
       database: "dkacalcu_dka_database",
     });
 
     // Prepare SQL statement for update
     const sql = `
       UPDATE tbl_data_v2
-      SET preventableFactors = ?
+      SET preventableFactors = ?, preExistingDiabetes = ?
       WHERE auditID = ?
     `;
 
     // Execute SQL statement
     const [result] = await connection.execute(sql, [
       data.preventableFactors,
+      data.preExistingDiabetes,
       data.auditID,
     ]);
 

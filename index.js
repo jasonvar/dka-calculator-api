@@ -102,22 +102,39 @@ app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
  */
 app.post("/update", updateRules, validateRequest, async (req, res) => {
   try {
+    //get the submitted data that passed validation  
     const data = matchedData(req);
-
-    const check = updateCheck(data.auditID);
+    
+    //get the patientHash in the database for given audit ID to check correct patient
+    const check = await updateCheck(data.auditID);
+    
+    //check the updateCheck found a record
+    if (!check) {
+        res
+        .status(404)
+        .json(
+          `Audit ID not found in database: ${data.auditID}`
+        );
+      return
+    }
+    
+    //perform the second step hash before checking patientHash matches
     const patientHash = rehashPatientHash(data.patientHash);
-
+    
+    //check the submitted patientHash matches the database patient hash
     if (check.patientHash != patientHash) {
       res
         .status(401)
         .json(
           `Patient NHS number or date of birth do not match for episode with audit ID: ${data.auditID}`
         );
+      return
     }
-
+    
+    //update the database with new data
     await updateData(data);
 
-    res.json("Audit data updated successfully");
+    res.json("Audit data update complete");
   } catch (error) {
     console.error(error);
     res.status(500).json(error.message);

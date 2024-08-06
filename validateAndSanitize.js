@@ -267,7 +267,13 @@ const updateRules = [
     .bail()
     .isLength({ min: 64, max: 64 })
     .withMessage("Patient hash field must be exactly 64 characters in length."),
-
+    
+    check("preExistingDiabetes")
+        .isBoolean()
+        .withMessage(
+            "Pre-existing diabetes status field must be data type [boolean]."
+        ),
+    
   check("preventableFactors")
     .isArray()
     .withMessage("Preventable factors field must be data type [array].")

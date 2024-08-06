@@ -13,8 +13,8 @@ async function generateAuditID() {
   try {
     const connection = await mysql.createConnection({
       host: "localhost",
-      user: keys.user,
-      password: keys.password,
+      user: keys.select.user,
+      password: keys.select.password,
       database: "dkacalcu_dka_database",
     });
     while (!isUnique) {
