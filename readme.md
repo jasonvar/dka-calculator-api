@@ -10,9 +10,12 @@ The BSPED Paediatric DKA Calculator is registered as a medical device with the M
 
 The API is served from `https://api.dka-calculator.co.uk/`. The various functions of the API include validating and performing calculations on the input variables, generating unique episode IDs, inserting audit variables into the SQL database and returning the calculations and episode IDs to the client.
 
-### API calls
+### API routes
 
-The API accepts a POST request with a single parameter `data` as a JSON encoded string with the following properties:
+#### /calculate
+
+##### Request
+Accepts a POST request with a single parameter `data` as a JSON encoded string with the following properties:
 
 - **legalAgreement** boolean | required | accepted values: `true`
 - **patientAge** integer | required | accepted values: `min: 0` `max: 18`
@@ -40,9 +43,9 @@ The API accepts a POST request with a single parameter `data` as a JSON encoded 
 - **clientDatetime** datetime object | required | accepted values: `any` (expected client device datetime generated at API call but not validated)
 - **clientUseragent** string | required | accepted values: `any` (expected client navigator.userAgent but not validated)
 
-### API response
+#### Response
 
-The API responds to valid calls with a JSON object with the following properties:
+The API responds to valid requests with a JSON object with the following properties:
 
 - **auditID** string | the unique episode ID to be printed on the generated care pathway and stored with the audit data
 - **calculations** object:
@@ -108,3 +111,22 @@ The API responds to valid calls with a JSON object with the following properties
   - **isCapped** boolean | if the calculated value was capped by the limit
   - **formula** string | the forumla used to perform the calculation
   - **working** string | the formula with provided variables and output
+
+If the call is invalid a JSON object is returned with an array of errors.
+
+#### /update
+
+##### Request
+
+Accepts a POST request with a single parameter `data` as a JSON encoded string with the following properties:
+
+- **auditID** string | required | accepted values: `alphanumeric of length 6`
+- **patientHash** string | required | accepted values: `SHA-256 output hash`
+- **preExistingDiabetes** boolean | required | accepted values: `any`
+- **preventableFactors** array | required | accepted values: array of strings of minimum length 1 (expected contents of array per list in dka-calculator/src/assets/data.js but not validated)
+
+##### Response
+
+The API responds to valid requests with a string: `Audit data update complete`
+
+If the call is invalid a JSON object is returned with an array of errors.
