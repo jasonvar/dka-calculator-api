@@ -10,7 +10,7 @@ The BSPED Paediatric DKA Calculator is registered as a medical device with the M
 
 The API is served from `https://api.dka-calculator.co.uk/`. The various functions of the API include validating and performing calculations on the input variables, generating unique episode IDs, inserting audit variables into the SQL database and returning the calculations and episode IDs to the client.
 
-The API is tested with each update. The testing schema can be found in `tests.json`.
+The API is tested with each update. The testing schema can be found in `tests.json`. [Run tests via Postman here](https://universal-capsule-155462.postman.co/workspace/dka-calculator-api~e0a7b736-5f9f-4f56-881c-c2e0cad82ec4/run/create?collection=14785026-e21a63d3-1d02-44e0-acf0-606e604a5ece&type=manual-run&tab=functional).
 
 ### API routes
 
