@@ -39,6 +39,11 @@ app.get("/", (req, res) => {
   );
 });
 
+app.get("/config", (req, res) => {
+  const config = require("./clientConfig.json");
+  res.json(config);
+});
+
 /**
  * Primary route - for calculating variables and entering new episodes into the database.
  * @name POST /calculate
