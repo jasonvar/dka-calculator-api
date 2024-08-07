@@ -35,7 +35,7 @@ const calculateVariables = (data) => {
       const checkSeverityLevel = (levelConfig) => {
         if (data.ketones) {
           if (data.ketones < config.minimumKetones)
-            throw new Error(
+            errors.push(
               `Ketones of ${data.ketones}mmol/L are below the diagnostic threshold of ${config.minimumKetones}mmol/L for DKA.`
             );
         }
