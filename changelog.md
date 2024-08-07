@@ -4,11 +4,11 @@ All notable changes to the BSPED Paediatric DKA Calculator API codebase will be 
 
 See also:
 
-- [client repo](https://github.com/dan-leach/dka-calculator)
-- [contributors](https://github.com/dan-leach/dka-calculator/blob/main/contributors.md) to the project.
+- [Client changelog](https://github.com/dan-leach/dka-calculator/blob/main/changelog.md)
+- [Contributors](https://github.com/dan-leach/dka-calculator/blob/main/contributors.md) to the project.
 
 ## [v1.0] - TBC 2024
 
-### Added
+Initial version of the API as a separate Express.js application.
 
-- This is the initial version of the API. Previous versions of the DKA Calculator performed calculations in the browser. The API used to store audit data to the database was previously part of the client repo.
+Previous versions of the DKA Calculator performed calculations in the browser and passed audit data to via a PHP API which was part of the client repository.
