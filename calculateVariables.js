@@ -491,7 +491,7 @@ const calculateVariables = (data) => {
     const formula = "[Insulin rate (Units/kg/hour)] x [Patient weight]";
 
     // Generate string showing the limit for the insulin rate based on the selected option.
-    const limit = `${capped} Units/hour`;
+    const limit = `${capped} Units/hour (for ${data.insulinRate} Units/kg/hour)`;
 
     // Generate string showing the working calculation for the insulin rate.
     const working = `[${data.insulinRate} Units/kg/hour] x [${weight.toFixed(
