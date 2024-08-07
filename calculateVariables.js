@@ -71,6 +71,10 @@ const calculateVariables = (data) => {
 
     const formula = `pH [>=7.2 and <7.3] or bicarbonate [<15mmol/L] ==> severe<br>pH [>=7.1 and <7.2] or bicarbonate [<10mmol/L] ==> moderate<br>pH [>=6.5 and <7.1] or bicarbonate [<5mmol/L] ==> severe<br>(if bicarbonate and pH return different severity levels, most severe option is used)`;
 
+    /**
+     * Generates a string showing the working used to find the severity level.
+     * @returns {string} - The generated string.
+     */
     const working = () => {
       let working = `pH [${data.pH}] is [>=${config.severity[val].pHRange.lower}, <${config.severity[val].pHRange.upper}] `;
       if (data.bicarbonate)
