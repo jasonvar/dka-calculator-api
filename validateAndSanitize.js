@@ -27,6 +27,25 @@ const calculateRules = [
     })
     .withMessage("Patient age must be an integer in the range 0 to 18."),
 
+  check("patientAgeMonths")
+    .custom((value) => {
+      //use custom validator as isFloat will accept numbers with string datatype
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error(
+          "Patient age in months field must be data type [integer]."
+        );
+      }
+      return true;
+    })
+    .bail()
+    .isInt({
+      min: 0,
+      max: 229,
+    })
+    .withMessage(
+      "Patient age in months must be an integer in the range 0 to 229."
+    ),
+
   check("patientSex")
     .isString()
     .withMessage("Patient sex field must be data type [string].")
@@ -267,13 +286,13 @@ const updateRules = [
     .bail()
     .isLength({ min: 64, max: 64 })
     .withMessage("Patient hash field must be exactly 64 characters in length."),
-    
-    check("preExistingDiabetes")
-        .isBoolean()
-        .withMessage(
-            "Pre-existing diabetes status field must be data type [boolean]."
-        ),
-    
+
+  check("preExistingDiabetes")
+    .isBoolean()
+    .withMessage(
+      "Pre-existing diabetes status field must be data type [boolean]."
+    ),
+
   check("preventableFactors")
     .isArray()
     .withMessage("Preventable factors field must be data type [array].")

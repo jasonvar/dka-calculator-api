@@ -76,7 +76,7 @@ const calculateVariables = (data) => {
      * @returns {string} - The generated string.
      */
     const working = () => {
-      let working = `pH [${data.pH}] is [>=${config.severity[val].pHRange.lower}, <${config.severity[val].pHRange.upper}] `;
+      let working = `pH [${data.pH}] is [>=${config.severity[val].pHRange.lower} and <${config.severity[val].pHRange.upper}] `;
       if (data.bicarbonate)
         working += `or bicarbonate [${data.bicarbonate}] is [<${config.severity[val].bicarbonateBelow}mmol/L] `;
       working += `==> ${val}`;
@@ -116,9 +116,11 @@ const calculateVariables = (data) => {
     const limit = `${cap}mL`;
 
     // Generate string showing working calculation for the bolus volume.
-    const working = `[${mlsPerKg}mL/kg] x [${weight.toFixed(
-      1
-    )}kg] = ${val.toFixed(0)}mL`;
+    const working = `[${mlsPerKg}mL/kg] x [${weight.toFixed(1)}kg] = ${
+      isCapped ? "<s>" : ""
+    }${uncapped.toFixed(0)}mL${isCapped ? "</s>" : ""} ${
+      isCapped ? "(exceeds limit)" : ""
+    }`;
 
     return {
       val,
@@ -248,9 +250,9 @@ const calculateVariables = (data) => {
        */
       const working = `[${percentage.val}%] x [${weight.toFixed(
         1
-      )} kg] x 10 = ${uncapped.toFixed(0)} mL ${
-        isCapped ? "(exceeds limit)" : ""
-      }`;
+      )} kg] x 10 = ${isCapped ? "<s>" : ""}${uncapped.toFixed(0)}mL${
+        isCapped ? "</s>" : ""
+      } ${isCapped ? "(exceeds limit)" : ""}`;
 
       return {
         val,
@@ -375,9 +377,9 @@ const calculateVariables = (data) => {
        */
       const calculateWorking = () => {
         const formatResult = (calculation) =>
-          `${calculation} = ${uncapped.toFixed(0)}mL ${
-            isCapped ? "(exceeds limit)" : ""
-          }`;
+          `${calculation} = ${isCapped ? "<s>" : ""}${uncapped.toFixed(0)}mL${
+            isCapped ? "</s>" : ""
+          } ${isCapped ? "(exceeds limit)" : ""}`;
 
         if (weight < 10) {
           return formatResult(`[${weight.toFixed(1)}kg] x 100`);
@@ -496,7 +498,9 @@ const calculateVariables = (data) => {
     // Generate string showing the working calculation for the insulin rate.
     const working = `[${data.insulinRate} Units/kg/hour] x [${weight.toFixed(
       1
-    )}kg] = ${val.toFixed(2)} Units/hour`;
+    )}kg] = ${isCapped ? "<s>" : ""}${uncapped.toFixed(2)} Units/hour${
+      isCapped ? "</s>" : ""
+    } ${isCapped ? "(exceeds limit)" : ""}`;
 
     return {
       val,
@@ -531,9 +535,11 @@ const calculateVariables = (data) => {
     const limit = `${cap}mL`;
 
     // Generate string showing the working calculation for the glucose bolus volume.
-    const working = `[${mlsPerKg}mL/kg] x [${weight.toFixed(
-      1
-    )}kg] = ${val.toFixed(0)}mL`;
+    const working = `[${mlsPerKg}mL/kg] x [${weight.toFixed(1)}kg] = ${
+      isCapped ? "<s>" : ""
+    }${uncapped.toFixed(0)}mL${isCapped ? "</s>" : ""} ${
+      isCapped ? "(exceeds limit)" : ""
+    }`;
 
     return {
       val,
@@ -569,9 +575,11 @@ const calculateVariables = (data) => {
     const limit = `${cap}mL`;
 
     // Shows the working calculation for the HHS bolus volume.
-    const working = `[${mlsPerKg}mL/kg] x [${weight.toFixed(
-      1
-    )}kg] = ${val.toFixed(0)}mL`;
+    const working = `[${mlsPerKg}mL/kg] x [${weight.toFixed(1)}kg] = ${
+      isCapped ? "<s>" : ""
+    }${uncapped.toFixed(0)}mL${isCapped ? "</s>" : ""} ${
+      isCapped ? "(exceeds limit)" : ""
+    }`;
 
     return {
       val,

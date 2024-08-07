@@ -52,9 +52,13 @@ app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
     const { generateAuditID } = require("./generateAuditID");
     const { insertCalculateData } = require("./insertData");
     const { getImdDecile } = require("./getImdDecile");
+    const { checkWeightWithinLimit } = require("./checkWeightWithinLimit");
 
     //get the validated data
     const data = matchedData(req);
+
+    //check the weight is within limits or override is true
+    checkWeightWithinLimit(data);
 
     //get the IP address of the client request
     const clientIP = req.ip;
