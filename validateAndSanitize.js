@@ -249,9 +249,17 @@ const calculateRules = [
     ),
 
   check("appVersion")
-    .isString()
-    .withMessage("App version field must be data type [string].")
-    .escape(),
+    .isObject()
+    .withMessage("App version field must be data type [object].")
+    .bail()
+    .custom((obj) =>
+      Object.values(obj).every(
+        (value) => typeof value === "string" && /^[a-zA-Z0-9 .]+$/.test(value)
+      )
+    )
+    .withMessage(
+      "Each app version property value must be data type [string], containing stop and alphanumeric characters only."
+    ),
 
   check("clientDatetime")
     .isISO8601() // Validates the input as an ISO 8601 date
