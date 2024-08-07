@@ -162,7 +162,7 @@ const calculateRules = [
       min: 0,
       max: 10,
     })
-    .withMessage("If provided, ketones must be in range 3 to 50."),
+    .withMessage("If provided, ketones must be in range 0 to 10."),
 
   check("weight")
     .isFloat({ min: 2, max: 150 })

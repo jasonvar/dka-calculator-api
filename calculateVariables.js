@@ -33,6 +33,12 @@ const calculateVariables = (data) => {
        * @returns {string|false} - Severity level if matched, otherwise false.
        */
       const checkSeverityLevel = (levelConfig) => {
+        if (data.ketones) {
+          if (data.ketones < config.minimumKetones)
+            throw new Error(
+              `Ketones of ${data.ketones}mmol/L are below the diagnostic threshold of ${config.minimumKetones}mmol/L for DKA.`
+            );
+        }
         const { pHRange, bicarbonateBelow } = levelConfig;
 
         if (
