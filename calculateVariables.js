@@ -82,6 +82,7 @@ const calculateVariables = (data) => {
      * @returns {string} - The generated string.
      */
     const working = () => {
+      if (!val) return false;
       let working = `pH [${data.pH}] is [>=${config.severity[val].pHRange.lower} and <${config.severity[val].pHRange.upper}] `;
       if (data.bicarbonate)
         working += `or bicarbonate [${data.bicarbonate}] is [<${config.severity[val].bicarbonateBelow}mmol/L] `;
