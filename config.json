@@ -1,4 +1,87 @@
 {
+  "appName": "Paediatric DKA Calculator",
+  "underDevelopment": true,
+  "author": {
+    "name": "Dan Leach",
+    "url": "https://danleach.uk",
+    "email": "admin@dka-calculator.co.uk",
+    "contributors": {
+      "current": "Rob Spaull, Danny Simpson, Jonathan Fenwick, Elham Atiq, <a href='https://sec.stealthcopter.com/' target='_blank'>Mat Rollings</a>",
+      "url": "https://github.com/dan-leach/dka-calculator/blob/main/contributors.md"
+    }
+  },
+  "organisations": {
+    "bsped": {
+      "main": "https://www.bsped.org.uk",
+      "dkaGuidelines": "https://www.bsped.org.uk/clinical-resources/bsped-dka-guidelines/",
+      "icpVersion": "1.4"
+    },
+    "ispad": "https://www.ispad.org"
+  },
+  "disclaimer": "Decisions about patient care remain the treating clinician's responsibility.",
+  "api": {
+    "version": "1.0",
+    "repo": {
+      "main": "https://github.com/dan-leach/dka-calculator-api",
+      "changelog": "https://github.com/dan-leach/dka-calculator-api/blob/main/changelog.md"
+    },
+    "url": "https://api.dka-calculator.co.uk/",
+    "timeoutDuration": 15000,
+    "showConsole": true
+  },
+  "client": {
+    "url": "https://dka-calculator.co.uk",
+    "version": "2.0",
+    "repo": {
+      "main": "https://github.com/dan-leach/dka-calculator",
+      "changelog": "https://github.com/dan-leach/dka-calculator/blob/main/changelog.md"
+    }
+  },
+  "validation": {
+    "patientAge": {
+      "min": 0,
+      "max": 18
+    },
+    "patientAgeMonths": {
+      "min": 0,
+      "max": 228
+    },
+    "protocolStartDatetime": {
+      "withinPastHours": 24
+    },
+    "pH": {
+      "min": 6.5,
+      "max": 7.5
+    },
+    "bicarbonate": {
+      "min": 0,
+      "max": 35
+    },
+    "glucose": {
+      "min": 3,
+      "max": 50
+    },
+    "ketones": {
+      "min": 0,
+      "max": 10
+    },
+    "weight": {
+      "min": 2,
+      "max": 150
+    },
+    "insulinRate": {
+      "options": [0.05, 0.1]
+    },
+    "insulinDeliveryMethod": {
+      "options": ["pen", "pump"]
+    },
+    "episodeType": {
+      "options": ["real", "test"]
+    },
+    "auditID": {
+      "length": 6
+    }
+  },
   "severity": {
     "severe": {
       "pHRange": {
@@ -36,11 +119,332 @@
     "insulin01": 7.5,
     "insulin005": 3.75
   },
-  "bolusMlsPerKg": 10,
-  "glucoseBolusMlsPerKg": 2,
-  "hhsBolusMlsPerKg": 20,
+  "mlsPerKg": {
+    "bolus": 10,
+    "glucose": 2,
+    "hhs": 20
+  },
   "deficitReplacementDuration": 48,
   "minimumKetones": 3,
+  "regions": [
+    {
+      "name": "Northern Ireland",
+      "centres": [
+        "Altnagelvin Area Hospital, Londonderry",
+        "Antrim Area Hospital, Antrim",
+        "Causeway Hospital, Coleraine",
+        "Craigavon Area Hospital, Craigavon",
+        "Daisy Hill Hospital, Newry",
+        "Royal Belfast Hospital for Sick Children, Belfast",
+        "South West Acute Hospital, Enniskillen",
+        "Ulster Hospital, Dundonald"
+      ]
+    },
+    {
+      "name": "Scotland",
+      "centres": [
+        "Lothian",
+        "Greater Glasgow",
+        "Wishaw",
+        "Borders",
+        "Ayrshire & Arran",
+        "Dumfries",
+        "Highlands",
+        "Grampian",
+        "Tayside",
+        "Fife",
+        "Forth Valley"
+      ]
+    },
+    {
+      "name": "Wales",
+      "centres": [
+        "Bronglais General Hospital",
+        "Glan Clwyd Hospital",
+        "Glangwili General Hospital",
+        "Grange University Hospital",
+        "Morriston Hospital",
+        "Neath Port Talbot Hospital",
+        "Prince Charles Hospital",
+        "Princess of Wales Hospital",
+        "Royal Glamorgan Hospital",
+        "University Hospital of Wales",
+        "Withybush General Hospital",
+        "Wrexham Maelor Hospital",
+        "Ysbyty Gwynedd"
+      ]
+    },
+    {
+      "name": "East Midlands",
+      "centres": [
+        "Boston Pilgrim Hospital",
+        "Chesterfield Royal",
+        "Derby Hospitals",
+        "Grantham and District Hospital",
+        "Kettering General Hospital",
+        "Leicester Royal Infirmary",
+        "Lincoln County Hospital",
+        "Northampton General Hospital",
+        "Nottingham University Hospitals",
+        "Sherwood Forest Hospitals"
+      ]
+    },
+    {
+      "name": "East of England",
+      "centres": [
+        "Addenbrookes Hospital",
+        "Basildon and Thurrock University Hospital",
+        "Bedford Hospital",
+        "Broomfield Hospital",
+        "Colchester Hospital",
+        "East & North Herts",
+        "Hinchingbrooke Health Care",
+        "Ipswich Hospital",
+        "James Paget University Hospital",
+        "Luton & Dunstable University Hospital",
+        "Norfolk & Norwich University Hospital",
+        "Peterborough City Hospital",
+        "Princess Alexandra Hospital",
+        "Queen Elizabeth Hospital Kings Lynn",
+        "Queen Elizabeth II Hospital",
+        "Southend University Hospital",
+        "Watford General Hospital",
+        "West Suffolk Hospital"
+      ]
+    },
+    {
+      "name": "North East and North Cumbria",
+      "centres": [
+        "Bishop Aukland Hospital",
+        "Darlington Memorial Hospital",
+        "Friarage Hospital",
+        "Great North Children's Hospital",
+        "North Tyneside General Hospital",
+        "Queen Elizabeth Hospital",
+        "South Tyneside District Hospital",
+        "Sunderland Royal Hospital",
+        "The Cumberland Infirmary",
+        "The James Cook University Hospital",
+        "University Hospital of Hartlepool",
+        "University Hospital of North Durham",
+        "University Hospital of North Tees",
+        "West Cumberland Hospital"
+      ]
+    },
+    {
+      "name": "North West",
+      "centres": [
+        "Alder Hey Children’s",
+        "Blackpool Teaching Hospitals",
+        "Bolton",
+        "Central Manchester University Hospitals",
+        "Countess of Chester Hospital",
+        "East Cheshire",
+        "East Lancashire Hospitals",
+        "Lancashire Teaching Hospitals",
+        "Mid Cheshire Hospitals",
+        "Salford Royal",
+        "Southport and Ormskirk Hospital",
+        "St Helens and Knowsley Teaching Hospitals",
+        "Stockport",
+        "Tameside & Glossop Integrated Care",
+        "The Pennine Acute Hospitals",
+        "University Hospital of South Manchester",
+        "University Hospitals of Morecambe Bay",
+        "Warrington and Halton Hospitals",
+        "Wirral University Teaching Hospital",
+        "Wrightington Wigan and Leigh"
+      ]
+    },
+    {
+      "name": "South East Coast and London Partnership",
+      "centres": [
+        "Barnet General Hospital",
+        "Buckland Hospital",
+        "Central Middlesex",
+        "Chelsea and Westminster",
+        "Conquest Hospital",
+        "Croydon University Hospital",
+        "Darent Valley Hospital",
+        "Ealing Hospital",
+        "East Surrey Hospital",
+        "Eastbourne District General Hospital",
+        "Epsom Hospital",
+        "Evelina London Children’s Hospital",
+        "Frimley Park Hospital",
+        "Great Ormond Street Hospital for Children",
+        "Hillingdon Hospitals",
+        "Kent and Canterbury Hospital",
+        "King George Hospital",
+        "King's College Hospital",
+        "Kingston Hospital",
+        "Lewisham Hospital",
+        "Maidstone Hospital",
+        "Medway Maritime Hospital",
+        "Newham University Hospital",
+        "North Middlesex University Hospital",
+        "Northwick Park",
+        "Princess Royal University Hospital",
+        "Queen Elizabeth Hospital",
+        "Queen Elizabeth The Queen Mother Hospital",
+        "Queen Mary's Hospital",
+        "Queen's Hospital",
+        "Royal Alexandra Children's Hospital",
+        "Royal Free London",
+        "Royal Surrey County Hospital",
+        "Royal Victoria Hospital",
+        "St George’s Hospital",
+        "St Helier Hospital",
+        "St. Mary’s Hospital",
+        "St. Peter's Hospital",
+        "St. Richards Hospital",
+        "The Royal London Hospital",
+        "The Whittington Hospital",
+        "Tunbridge Wells Hospital",
+        "University College Hospital",
+        "West Middlesex University Hospital",
+        "Whipps Cross University Hospital",
+        "William Harvey Hospital",
+        "Worthing Hospital"
+      ]
+    },
+    {
+      "name": "South West",
+      "centres": [
+        "Gloucestershire Hospitals",
+        "Great Western Hospitals",
+        "North Bristol",
+        "Northern Devon Hospital",
+        "Plymouth Hospitals",
+        "Royal Cornwall Hospitals",
+        "Royal Devon and Exeter Hospitals",
+        "Royal United Hospitals Bath",
+        "South Devon Healthcare",
+        "Taunton and Somerset",
+        "University Hospitals Bristol",
+        "Yeovil District Hospital"
+      ]
+    },
+    {
+      "name": "Thames Valley",
+      "centres": [
+        "Frimley Health",
+        "John Radcliffe Hospital",
+        "Milton Keynes Hospital",
+        "Royal Berkshire",
+        "Stoke Mandeville Hospital",
+        "Wycombe Hospital"
+      ]
+    },
+    {
+      "name": "Wessex",
+      "centres": [
+        "Basingstoke and North Hampshire Hospital",
+        "Dorset County Hospital",
+        "Poole Hospital",
+        "Queen Alexandra Hospital",
+        "Royal Hampshire County Hospital",
+        "Salisbury District Hospital",
+        "Southampton General Hospital",
+        "St. Mary's Hospital"
+      ]
+    },
+    {
+      "name": "West Midlands",
+      "centres": [
+        "Alexandra Hospital",
+        "Birmingham Children’s Hospital",
+        "Birmingham City Hospital",
+        "Burton Hospitals",
+        "County Hospital (Stafford)",
+        "County Hospital (Wye Valley)",
+        "George Eliot Hospital",
+        "Good Hope Hospital",
+        "Heartlands Hospital",
+        "Hospital of St Cross",
+        "Kidderminster Hospital",
+        "New Cross Hospital",
+        "Princess Royal Hospital",
+        "Royal Shrewsbury Hospital",
+        "Royal Stoke University Hospital",
+        "Russells Hall Hospital",
+        "Sandwell General Hospital",
+        "Solihull Hospital",
+        "South Warwickshire",
+        "University Hospital Coventry",
+        "Walsall Manor Hospital",
+        "Worcestershire Royal Hospital"
+      ]
+    },
+    {
+      "name": "Yorkshire and Humber",
+      "centres": [
+        "Airedale General Hospital",
+        "Barnsley Hospital",
+        "Bassetlaw Hospital",
+        "Bradford Royal Infirmary",
+        "Calderdale Royal Hospital",
+        "Dewsbury and District Hospital",
+        "Diana, Princess of Wales Hospital",
+        "Doncaster Royal Infirmary",
+        "Harrogate District Hospital",
+        "Huddersfield Royal Infirmary",
+        "Hull Royal Infirmary",
+        "Leeds Children's Hospital",
+        "Pinderfields General Hospital",
+        "Pontefract General Infirmary",
+        "Rotherham Hospital",
+        "Scarborough Hospital",
+        "Scunthorpe General Hospital",
+        "Sheffield Children's Hospital",
+        "St.Luke's Hospital",
+        "The York Hospital"
+      ]
+    }
+  ],
+  "ethnicGroups": [
+    {
+      "name": "Asian or Asian British",
+      "subgroups": [
+        "Indian",
+        "Pakistani",
+        "Bangladeshi",
+        "Chinese",
+        "Any other Asian background"
+      ]
+    },
+    {
+      "name": "Black, Black British, Caribbean or African",
+      "subgroups": [
+        "Caribbean",
+        "African",
+        "Any other Black, Black British, or Caribbean background"
+      ]
+    },
+    {
+      "name": "Mixed or multiple ethnic groups",
+      "subgroups": [
+        "White and Black Caribbean",
+        "White and Black African",
+        "White and Asian",
+        "Any other Mixed or multiple ethnic background"
+      ]
+    },
+    {
+      "name": "White",
+      "subgroups": [
+        "English, Welsh, Scottish, Northern Irish or British",
+        "Irish",
+        "Gypsy or Irish Traveller",
+        "Roma",
+        "Any other White background"
+      ]
+    },
+    {
+      "name": "Other ethnic group",
+      "subgroups": ["Arab", "Any other ethnic group"]
+    }
+  ],
   "weightLimits": {
     "male": {
       "lower": [
@@ -157,5 +561,20 @@
       ]
     },
     "max": 75
+  },
+  "indicatorCoordinates": {
+    "xAxisShock": {
+      "yes": 205,
+      "no": 358
+    },
+    "yAxisSeverity": {
+      "severe": 68,
+      "moderate": 103,
+      "mild": 138
+    },
+    "xAxisDiabetic": {
+      "yes": 200,
+      "no": 358
+    }
   }
 }

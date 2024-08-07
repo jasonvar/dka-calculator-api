@@ -1,4 +1,5 @@
 const { check, body, validationResult } = require("express-validator");
+const config = require("./config.json");
 
 /**
  * Validation rules for the calculate route.
@@ -22,10 +23,12 @@ const calculateRules = [
     })
     .bail()
     .isInt({
-      min: 0,
-      max: 18,
+      min: config.validation.patientAge.min,
+      max: config.validation.patientAge.max,
     })
-    .withMessage("Patient age must be an integer in the range 0 to 18."),
+    .withMessage(
+      `Patient age must be an integer in the range ${config.validation.patientAge.min} to ${config.validation.patientAge.max}.`
+    ),
 
   check("patientAgeMonths")
     .custom((value) => {
@@ -39,11 +42,11 @@ const calculateRules = [
     })
     .bail()
     .isInt({
-      min: 0,
-      max: 229,
+      min: config.validation.patientAgeMonths.min,
+      max: config.validation.patientAgeMonths.max,
     })
     .withMessage(
-      "Patient age in months must be an integer in the range 0 to 229."
+      `Patient age in months must be an integer in the range ${config.validation.patientAgeMonths.min} to ${config.validation.patientAgeMonths.max}.`
     ),
 
   check("patientSex")
@@ -73,7 +76,7 @@ const calculateRules = [
     )
     .bail()
     .matches(
-      /^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})$/
+      /^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))s?[0-9][A-Za-z]{2})$/
     )
     .withMessage("Patient postcode must be a valid UK postcode."),
 
@@ -84,11 +87,17 @@ const calculateRules = [
     .custom((value) => {
       const datetime = new Date(value);
       const now = new Date();
-      const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const twentyFourHoursAgo = new Date(
+        now.getTime() -
+          config.validation.protocolStartDatetime.withinPastHours *
+            60 *
+            60 *
+            1000
+      );
 
       if (datetime < twentyFourHoursAgo || datetime > now) {
         throw new Error(
-          "Protocol start datetime must be within the last 24 hours."
+          `Protocol start datetime must be within the last ${config.validation.protocolStartDatetime.withinPastHours} hours.`
         );
       }
 
@@ -105,10 +114,12 @@ const calculateRules = [
     })
     .bail()
     .isFloat({
-      min: 6.5,
-      max: 7.5,
+      min: config.validation.pH.min,
+      max: config.validation.pH.max,
     })
-    .withMessage(`pH must be in range 6.5 to 7.5.`),
+    .withMessage(
+      `pH must be in range ${config.validation.pH.min} to ${config.validation.pH.max}.`
+    ),
 
   check("bicarbonate")
     .optional()
@@ -123,10 +134,12 @@ const calculateRules = [
     })
     .bail()
     .isFloat({
-      min: 0,
-      max: 35,
+      min: config.validation.bicarbonate.min,
+      max: config.validation.bicarbonate.max,
     })
-    .withMessage("If provided, bicarbonate must be in range 0 to 35."),
+    .withMessage(
+      `If provided, bicarbonate must be in range ${config.validation.bicarbonate.min} to ${config.validation.bicarbonate.max}.`
+    ),
 
   check("glucose")
     .optional()
@@ -141,10 +154,12 @@ const calculateRules = [
     })
     .bail()
     .isFloat({
-      min: 3,
-      max: 50,
+      min: config.validation.glucose.min,
+      max: config.validation.glucose.max,
     })
-    .withMessage("If provided, glucose must be in range 3 to 50."),
+    .withMessage(
+      `If provided, glucose must be in range ${config.validation.glucose.min} to ${config.validation.glucose.max}.`
+    ),
 
   check("ketones")
     .optional()
@@ -159,14 +174,21 @@ const calculateRules = [
     })
     .bail()
     .isFloat({
-      min: 0,
-      max: 10,
+      min: config.validation.ketones.min,
+      max: config.validation.ketones.max,
     })
-    .withMessage("If provided, ketones must be in range 0 to 10."),
+    .withMessage(
+      `If provided, ketones must be in range ${config.validation.ketones.min} to ${config.validation.ketones.max}.`
+    ),
 
   check("weight")
-    .isFloat({ min: 2, max: 150 })
-    .withMessage("Weight must be a valid number between 2 and 150."),
+    .isFloat({
+      min: config.validation.weight.min,
+      max: config.validation.weight.max,
+    })
+    .withMessage(
+      `Weight must be a valid number between ${config.validation.weight.min} and ${config.validation.weight.max}.`
+    ),
 
   check("weightLimitOverride")
     .isBoolean()
@@ -180,8 +202,8 @@ const calculateRules = [
     .isFloat()
     .withMessage("Insulin rate field must be data type [float].")
     .bail()
-    .custom((value) => [0.05, 0.1].includes(value))
-    .withMessage("Insulin rate must be 0.05 or 0.1."),
+    .custom((value) => config.validation.insulinRate.options.includes(value))
+    .withMessage("Invalid insulin rate option provided."),
 
   check("preExistingDiabetes")
     .isBoolean()
@@ -196,8 +218,10 @@ const calculateRules = [
       "Insulin delivery method field must be data type [string], containing only alpha characters."
     )
     .bail()
-    .custom((value) => ["pen", "pump"].includes(value))
-    .withMessage("Insulin delivery method must be pen or pump."),
+    .custom((value) =>
+      config.validation.insulinDeliveryMethod.options.includes(value)
+    )
+    .withMessage("Invalid insulin delivery method option provided."),
 
   check("insulinDeliveryMethod")
     .if(body("preExistingDiabetes").equals("false"))
@@ -212,8 +236,8 @@ const calculateRules = [
       "Episode type field must be data type [string], containing only alpha characters."
     )
     .bail()
-    .custom((value) => ["real", "test"].includes(value))
-    .withMessage("Episode type must be real or test."),
+    .custom((value) => config.validation.episodeType.options.includes(value))
+    .withMessage("Invalid episode type option provided."),
 
   check("region")
     .isString()
@@ -282,8 +306,13 @@ const updateRules = [
       "Audit ID field must be data type [string], containing alphanumeric characters only."
     )
     .bail()
-    .isLength({ min: 6, max: 6 })
-    .withMessage("Audit ID field must be exactly 6 characters in length."),
+    .isLength({
+      min: config.validation.auditID.length,
+      max: config.validation.auditID.length,
+    })
+    .withMessage(
+      `Audit ID field must be exactly ${config.validation.auditID.length} characters in length.`
+    ),
 
   check("patientHash")
     .optional()

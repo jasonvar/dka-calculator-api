@@ -77,7 +77,7 @@ const calculateVariables = (data) => {
     };
     const val = calculateVal();
 
-    const formula = `pH [>=7.2 and <7.3] or bicarbonate [<15mmol/L] ==> severe<br>pH [>=7.1 and <7.2] or bicarbonate [<10mmol/L] ==> moderate<br>pH [>=6.5 and <7.1] or bicarbonate [<5mmol/L] ==> severe<br>(if bicarbonate and pH return different severity levels, most severe option is used)`;
+    const formula = `pH [>=${config.severity.mild.pHRange.lower} and <${config.severity.mild.pHRange.upper}] or bicarbonate [<${config.severity.mild.bicarbonateBelow}mmol/L] ==> mild<br>pH [>=${config.severity.moderate.pHRange.lower} and <${config.severity.mild.pHRange.upper}] or bicarbonate [<${config.severity.moderate.bicarbonateBelow}mmol/L] ==> moderate<br>pH [>=${config.severity.severe.pHRange.lower} and <${config.severity.severe.pHRange.lower}] or bicarbonate [<${config.severity.severe.bicarbonateBelow}mmol/L] ==> severe<br>(if bicarbonate and pH return different severity levels, most severe option is used)`;
 
     /**
      * Generates a string showing the working used to find the severity level.
@@ -106,7 +106,7 @@ const calculateVariables = (data) => {
    */
   const calculateBolusVolume = () => {
     const weight = data.weight;
-    const mlsPerKg = config.bolusMlsPerKg;
+    const mlsPerKg = config.mlsPerKg.bolus;
     const cap = config.caps.bolus;
 
     // Calculate the uncapped bolus volume based on mL/kg.
@@ -180,7 +180,7 @@ const calculateVariables = (data) => {
        * @returns {string} - The formula for determining deficit percentage.
        */
       const calculateFormula = () =>
-        `Severity [mild or moderate] ==> 5%<br>Severity [severe] ==> 10%`;
+        `Severity [mild] ==> ${config.severity.mild.deficitPercentage}%<br>Severity [moderate] ==> ${config.severity.moderate.deficitPercentage}<br>Severity [severe] ==> ${config.severity.severe.deficitPercentage}%`;
 
       /**
        * Shows the working calculation for the deficit percentage.
@@ -285,8 +285,7 @@ const calculateVariables = (data) => {
       const val = volume.val - bolusToSubtract;
 
       // Generate string showing formula used to calculate the volume less bolus.
-      const formula =
-        "[Deficit volume] - [10mL/kg bolus (only for non-shocked patients)]";
+      const formula = `[Deficit volume] - [${config.mlsPerKg.bolus}mL/kg bolus (only for non-shocked patients)]`;
 
       /**
        * Shows the working calculation for the volume less bolus.
@@ -525,7 +524,7 @@ const calculateVariables = (data) => {
    * @returns {Object} - An object containing the calculated volume, formula, limit, and working calculation.
    */
   const calculateGlucoseBolusVolume = () => {
-    const mlsPerKg = config.glucoseBolusMlsPerKg;
+    const mlsPerKg = config.mlsPerKg.glucose;
     const cap = config.caps.glucoseBolus;
 
     // Calculate the uncapped glucose bolus volume based on mL/kg.
@@ -565,7 +564,7 @@ const calculateVariables = (data) => {
    * @returns {Object} - An object containing the calculated volume, formula, limit, and working calculation.
    */
   const calculateHhsBolusVolume = () => {
-    const mlsPerKg = config.hhsBolusMlsPerKg;
+    const mlsPerKg = config.mlsPerKg.hhs;
     const cap = config.caps.hhsBolus;
 
     // Calculate the uncapped HHS bolus volume based on mL/kg.

@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/config", (req, res) => {
-  const config = require("./clientConfig.json");
+  const config = require("./config.json");
   res.json(config);
 });
 
