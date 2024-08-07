@@ -2,6 +2,11 @@
 
 All notable changes to the BSPED Paediatric DKA Calculator API codebase will be documented in this file.
 
+See also:
+
+- [client repo](https://github.com/dan-leach/dka-calculator)
+- [contributors](https://github.com/dan-leach/dka-calculator/blob/main/contributors.md) to the project.
+
 ## [v1.0] - TBC 2024
 
 ### Added
