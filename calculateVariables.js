@@ -169,7 +169,7 @@ const calculateVariables = (data) => {
        * @returns {string} - The formula for determining deficit percentage.
        */
       const calculateFormula = () =>
-        `[Severity] is mild or moderate ==> 5% / [Severity] is severe ==> 10%`;
+        `Severity [mild or moderate] ==> 5%<br>Severity [severe] ==> 10%`;
 
       /**
        * Shows the working calculation for the deficit percentage.
