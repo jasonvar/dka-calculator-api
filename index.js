@@ -135,6 +135,9 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
     //check the updateCheck found a record
     if (!check) {
       res.status(404).json(`Audit ID [${data.auditID}] not found in database`);
+      const logEntry = `Failed update attempt (auditID not found) on auditID: ${data.auditID}, IP: ${req.ip}, Time: ${new Date().toISOString()}\n`;
+      const fs = require('fs');
+      fs.appendFileSync('./private/update_failed_attempts.txt', logEntry);
       return;
     }
 
@@ -158,6 +161,9 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
         .json(
           `Patient NHS number or date of birth do not match for episode with audit ID: ${data.auditID}`
         );
+      const logEntry = `Failed update attempt (Hash non-matching) on auditID: ${data.auditID}, IP: ${req.ip}, Time: ${new Date().toISOString()}\n`;
+      const fs = require('fs');
+      fs.appendFileSync('./private/update_failed_attempts.txt', logEntry);
       return;
     }
 
