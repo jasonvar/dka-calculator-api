@@ -177,7 +177,7 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
  * @param {Object} res - The response object.
  */
 app.use("*", (req, res) => {
-  res.json("Incorrect API route");
+  res.status(400).json("Incorrect API route");
 });
 
 /**
