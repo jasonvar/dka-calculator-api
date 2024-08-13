@@ -49,8 +49,8 @@ function checkWeightWithinLimit(data) {
         config.weightLimits.max
       }kg) (range ${limit.lower()}kg to ${limit.upper()}kg for ${
         data.patientSex
-      } patient aged ${data.patientAge} years and ${
-        data.patientAgeMonths - data.patientAge * 12
+      } patient aged ${Math.floor(data.patientAge)} years and ${
+        ageInMonths - Math.floor(data.patientAge) * 12
       } months).`;
     }
     return {
