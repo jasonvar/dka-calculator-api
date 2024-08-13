@@ -63,7 +63,11 @@ app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
     const data = matchedData(req);
 
     //check the weight is within limits or override is true
-    checkWeightWithinLimit(data);
+    const check = checkWeightWithinLimit(data);
+    if (!check.pass) {
+      res.status(400).json({ errors: [{ msg: check.error }] });
+      return;
+    }
 
     //get the IP address of the client request
     const clientIP = req.ip;
