@@ -27,14 +27,6 @@ const calculateVariables = (data) => {
      * @returns {string} - The severity grade if matched, otherwise false.
      */
     const calculateVal = () => {
-      //check ketones above diagnostic threshold if provided
-      if (data.ketones) {
-        if (data.ketones < config.minimumKetones)
-          errors.push({
-            msg: `Ketones of ${data.ketones}mmol/L are below the diagnostic threshold of ${config.minimumKetones}mmol/L for DKA.`,
-          });
-      }
-
       /**
        * Checks if the given pH and bicarbonate values fall within the range for a specific severity level.
        * @param {Object} levelConfig - Configuration for the severity level.

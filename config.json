@@ -62,8 +62,7 @@
       "max": 50
     },
     "ketones": {
-      "min": 0,
-      "max": 10
+      "min": 3
     },
     "weight": {
       "min": 2,
@@ -125,7 +124,6 @@
     "hhs": 20
   },
   "deficitReplacementDuration": 48,
-  "minimumKetones": 3,
   "regions": [
     {
       "name": "Northern Ireland",

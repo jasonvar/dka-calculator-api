@@ -175,10 +175,9 @@ const calculateRules = [
     .bail()
     .isFloat({
       min: config.validation.ketones.min,
-      max: config.validation.ketones.max,
     })
     .withMessage(
-      `If provided, ketones must be in range ${config.validation.ketones.min} to ${config.validation.ketones.max}.`
+      `If provided, ketones must be at least ${config.validation.ketones.min}mmol/L (the diagnostic threshold for DKA).`
     ),
 
   check("weight")
