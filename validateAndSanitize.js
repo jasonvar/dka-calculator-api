@@ -87,17 +87,38 @@ const calculateRules = [
     .custom((value) => {
       const datetime = new Date(value);
       const now = new Date();
-      const twentyFourHoursAgo = new Date(
+      const minDatetime = new Date(
         now.getTime() -
           config.validation.protocolStartDatetime.withinPastHours *
+            60 *
+            60 *
+            1000 - //minus 10 minutes to allow for time taken to fill in form
+          10 * 60 * 1000
+      );
+
+      if (datetime < minDatetime) {
+        throw new Error(
+          `Protocol start datetime must be within the last ${config.validation.protocolStartDatetime.withinPastHours} hours.`
+        );
+      }
+
+      const maxDatetime = new Date(
+        now.getTime() +
+          config.validation.protocolStartDatetime.withinFutureHours *
             60 *
             60 *
             1000
       );
 
-      if (datetime < twentyFourHoursAgo || datetime > now) {
+      if (datetime > maxDatetime) {
         throw new Error(
-          `Protocol start datetime must be within the last ${config.validation.protocolStartDatetime.withinPastHours} hours.`
+          `Protocol start datetime must no more than ${
+            config.validation.protocolStartDatetime.withinFutureHours
+          } ${
+            config.validation.protocolStartDatetime.withinFutureHours === 1
+              ? "hour"
+              : "hours"
+          } in the future.`
         );
       }
 
