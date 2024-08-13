@@ -7,7 +7,6 @@ const config = require("./config.json");
  * @param {Object} data - The input data object containing patient information and configuration settings.
  * @param {boolean} data.weightLimitOverride - Flag to bypass weight limit checks.
  * @param {string} data.patientSex - The sex of the patient, used to determine weight limits.
- * @param {number} data.patientAgeMonths - The age of the patient in months.
  * @param {number} data.patientAge - The age of the patient in years.
  * @param {number} data.weight - The weight of the patient.
  * @returns {Object} An object containing the result of the check.
@@ -22,34 +21,26 @@ function checkWeightWithinLimit(data) {
         pass: true,
       };
 
+    const ageInMonths = (data.patientAge * 12).toFixed(0);
+
     const limit = {
       /**
        * Returns the lower weight limit based on patient sex and age in months.
        * @returns {number} - The lower weight limit.
        */
       lower() {
-        return config.weightLimits[data.patientSex].lower[
-          data.patientAgeMonths
-        ];
+        return config.weightLimits[data.patientSex].lower[ageInMonths];
       },
       /**
        * Returns the upper weight limit based on patient sex and age in months, capped by the maximum allowed weight.
        * @returns {number} - The upper weight limit.
        */
       upper() {
-        let upper =
-          config.weightLimits[data.patientSex].upper[data.patientAgeMonths];
+        let upper = config.weightLimits[data.patientSex].upper[ageInMonths];
         if (upper > config.weightLimits.max) upper = config.weightLimits.max;
         return upper;
       },
     };
-
-    // Calculate the age in years from patientAgeMonths, rounded down
-    const ageInYearsFromAgeMonths = Math.floor(data.patientAgeMonths / 12);
-
-    // Check if the calculated age in years matches the provided patientAge
-    if (ageInYearsFromAgeMonths !== data.patientAge)
-      throw `Patient age in months: [${data.patientAgeMonths}] does not match patient age in years: [${data.patientAge}]`;
 
     const weight = data.weight;
     //check the weight is within range

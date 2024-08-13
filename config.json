@@ -6,7 +6,7 @@
     "url": "https://danleach.uk",
     "email": "admin@dka-calculator.co.uk",
     "contributors": {
-      "current": "Rob Spaull, Danny Simpson, Jonathan Fenwick, Elham Atiq, <a href='https://sec.stealthcopter.com/' target='_blank'>Mat Rollings</a>",
+      "current": "Rob Spaull, Danny Simpson, Jonathan Fenwick, <a href='https://sec.stealthcopter.com/' target='_blank'>Mat Rollings</a>",
       "url": "https://github.com/dan-leach/dka-calculator/blob/main/contributors.md"
     }
   },
@@ -40,7 +40,7 @@
   "validation": {
     "patientAge": {
       "min": 0,
-      "max": 18
+      "max": 19.01
     },
     "patientAgeMonths": {
       "min": 0,

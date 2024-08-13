@@ -17,36 +17,17 @@ const calculateRules = [
     .custom((value) => {
       //use custom validator as isFloat will accept numbers with string datatype
       if (typeof value !== "number" || !Number.isFinite(value)) {
-        throw new Error("Patient age field must be data type [integer].");
+        throw new Error("Patient age field must be data type [number].");
       }
       return true;
     })
     .bail()
-    .isInt({
+    .isFloat({
       min: config.validation.patientAge.min,
       max: config.validation.patientAge.max,
     })
     .withMessage(
-      `Patient age must be an integer in the range ${config.validation.patientAge.min} to ${config.validation.patientAge.max}.`
-    ),
-
-  check("patientAgeMonths")
-    .custom((value) => {
-      //use custom validator as isFloat will accept numbers with string datatype
-      if (typeof value !== "number" || !Number.isFinite(value)) {
-        throw new Error(
-          "Patient age in months field must be data type [integer]."
-        );
-      }
-      return true;
-    })
-    .bail()
-    .isInt({
-      min: config.validation.patientAgeMonths.min,
-      max: config.validation.patientAgeMonths.max,
-    })
-    .withMessage(
-      `Patient age in months must be an integer in the range ${config.validation.patientAgeMonths.min} to ${config.validation.patientAgeMonths.max}.`
+      `Patient age must be an decimal in the range ${config.validation.patientAge.min} to ${config.validation.patientAge.max}.`
     ),
 
   check("patientSex")

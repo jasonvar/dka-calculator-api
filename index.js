@@ -69,6 +69,9 @@ app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
       return;
     }
 
+    //limit decimal age to 2 decimal places after checkWeighWithinLimit
+    data.patientAge = data.patientAge.toFixed(2);
+
     //get the IP address of the client request
     const clientIP = req.ip;
 
