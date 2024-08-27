@@ -1,5 +1,5 @@
 const mysql = require("mysql2/promise");
-const keys = require("./private/keys.json");
+const keys = require("../private/keys.json");
 
 /**
  * Fetches the auditID and patientHash from the database.
@@ -9,20 +9,20 @@ const keys = require("./private/keys.json");
 async function updateCheck(auditID) {
   try {
     const connection = await mysql.createConnection({
-        host: "localhost",
-        user: keys.select.user,
-        password: keys.select.password,
-        database: "dkacalcu_dka_database",
-      });
+      host: "localhost",
+      user: keys.select.user,
+      password: keys.select.password,
+      database: "dkacalcu_dka_database",
+    });
     const sql =
       "SELECT auditID, patientHash FROM tbl_data_v2 WHERE auditID = ?";
 
     const [rows] = await connection.execute(sql, [auditID]);
 
     if (rows.length === 0) {
-      return false
+      return false;
     }
-    
+
     return rows[0];
   } catch (error) {
     console.error(error);

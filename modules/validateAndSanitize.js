@@ -1,5 +1,5 @@
 const { check, body, validationResult } = require("express-validator");
-const config = require("./config.json");
+const config = require("../config.json");
 
 /**
  * Validation rules for the calculate route.
@@ -195,6 +195,10 @@ const calculateRules = [
     .isBoolean()
     .withMessage("Weight limit override field must be data type [boolean]."),
 
+  check("use2SD")
+    .isBoolean()
+    .withMessage("Used 2SD weight function field must be data type [boolean]."),
+
   check("shockPresent")
     .isBoolean()
     .withMessage("Clinical shock status field must be data type [boolean]."),
@@ -343,6 +347,24 @@ const updateRules = [
     .withMessage(
       "Each preventable factor must be data type [string], containing alphanumeric characters and forward slash only."
     ),
+
+  check("appVersion")
+    .isObject()
+    .withMessage("App version field must be data type [object].")
+    .bail()
+    .custom((obj) =>
+      Object.values(obj).every(
+        (value) => typeof value === "string" && /^[a-zA-Z0-9 .]+$/.test(value)
+      )
+    )
+    .withMessage(
+      "Each app version property value must be data type [string], containing stop and alphanumeric characters only."
+    ),
+
+  check("clientUseragent")
+    .isString()
+    .withMessage("Client useragent field must be data type [string].")
+    .escape(),
 ];
 
 // Middleware function to validate the request

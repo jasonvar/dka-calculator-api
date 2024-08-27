@@ -7,7 +7,7 @@ const {
   validateRequest,
   updateRules,
   calculateRules,
-} = require("./validateAndSanitize");
+} = require("./modules/validateAndSanitize");
 const keys = require("./private/keys.json");
 
 const app = express();
@@ -53,11 +53,13 @@ app.get("/config", (req, res) => {
  */
 app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
   try {
-    const { calculateVariables } = require("./calculateVariables");
-    const { generateAuditID } = require("./generateAuditID");
-    const { insertCalculateData } = require("./insertData");
-    const { getImdDecile } = require("./getImdDecile");
-    const { checkWeightWithinLimit } = require("./checkWeightWithinLimit");
+    const { calculateVariables } = require("./modules/calculateVariables");
+    const { generateAuditID } = require("./modules/generateAuditID");
+    const { insertCalculateData } = require("./modules/insertData");
+    const { getImdDecile } = require("./modules/getImdDecile");
+    const {
+      checkWeightWithinLimit,
+    } = require("./modules/checkWeightWithinLimit");
 
     //get the validated data
     const data = matchedData(req);
@@ -130,8 +132,8 @@ app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
  */
 app.post("/update", updateRules, validateRequest, async (req, res) => {
   try {
-    const { updateData } = require("./insertData");
-    const { updateCheck } = require("./updateCheck");
+    const { updateData } = require("./modules/insertData");
+    const { updateCheck } = require("./modules/updateCheck");
 
     //get the submitted data that passed validation
     const data = matchedData(req);
@@ -178,8 +180,11 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
       return;
     }
 
+    //get the IP address of the client request
+    const clientIP = req.ip;
+
     //update the database with new data
-    await updateData(data);
+    await updateData(data, clientIP);
 
     res.json("Audit data update complete");
   } catch (error) {

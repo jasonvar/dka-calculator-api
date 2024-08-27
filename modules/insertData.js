@@ -1,5 +1,5 @@
 const mysql = require("mysql2/promise");
-const keys = require("./private/keys.json");
+const keys = require("../private/keys.json");
 
 /**
  * Inserts audit data into the database.
@@ -30,10 +30,10 @@ async function insertCalculateData(
     // Prepare SQL statement
     const sql = `
       INSERT INTO tbl_data_v2 (
-        legalAgreement, patientAge, patientSex, protocolStartDatetime, pH, bicarbonate, glucose, ketones, weight, weightLimitOverride,
+        legalAgreement, patientAge, patientSex, protocolStartDatetime, pH, bicarbonate, glucose, ketones, weight, weightLimitOverride, use2SD,
         shockPresent, insulinRate, preExistingDiabetes, insulinDeliveryMethod, episodeType, region, centre, ethnicGroup, ethnicSubgroup,
         preventableFactors, imdDecile, auditID, patientHash, clientDatetime, clientUseragent, clientIP, appVersion, calculations
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     // Execute SQL statement
@@ -48,6 +48,7 @@ async function insertCalculateData(
       data.ketones,
       data.weight,
       data.weightLimitOverride,
+      data.use2SD,
       data.shockPresent,
       data.insulinRate,
       data.preExistingDiabetes,
@@ -88,27 +89,29 @@ async function insertCalculateData(
  * @param {Object} data - The submitted data including the auditID of the session and the updated preventableFactors array to be inserted.
  * @throws {Error} If an error occurs during the database operation.
  */
-async function updateData(data) {
+async function updateData(data, clientIP) {
   try {
     const connection = await mysql.createConnection({
       host: "localhost",
-      user: keys.update.user,
-      password: keys.update.password,
+      user: keys.insert.user,
+      password: keys.insert.password,
       database: "dkacalcu_dka_database",
     });
 
     // Prepare SQL statement for update
-    const sql = `
-      UPDATE tbl_data_v2
-      SET preventableFactors = ?, preExistingDiabetes = ?
-      WHERE auditID = ?
+    const sql = `INSERT INTO tbl_update_v2 (
+        auditID, preExistingDiabetes, preventableFactors, clientUseragent, clientIP, appVersion
+      ) VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     // Execute SQL statement
     const [result] = await connection.execute(sql, [
-      data.preventableFactors,
-      data.preExistingDiabetes,
       data.auditID,
+      data.preExistingDiabetes,
+      data.preventableFactors,
+      data.clientUseragent,
+      clientIP,
+      data.appVersion,
     ]);
 
     if (result.affectedRows === 0) {
