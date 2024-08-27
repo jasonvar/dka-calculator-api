@@ -343,6 +343,24 @@ const updateRules = [
     .withMessage(
       "Each preventable factor must be data type [string], containing alphanumeric characters and forward slash only."
     ),
+
+  check("appVersion")
+    .isObject()
+    .withMessage("App version field must be data type [object].")
+    .bail()
+    .custom((obj) =>
+      Object.values(obj).every(
+        (value) => typeof value === "string" && /^[a-zA-Z0-9 .]+$/.test(value)
+      )
+    )
+    .withMessage(
+      "Each app version property value must be data type [string], containing stop and alphanumeric characters only."
+    ),
+
+  check("clientUseragent")
+    .isString()
+    .withMessage("Client useragent field must be data type [string].")
+    .escape(),
 ];
 
 // Middleware function to validate the request

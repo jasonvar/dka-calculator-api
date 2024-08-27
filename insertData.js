@@ -88,27 +88,29 @@ async function insertCalculateData(
  * @param {Object} data - The submitted data including the auditID of the session and the updated preventableFactors array to be inserted.
  * @throws {Error} If an error occurs during the database operation.
  */
-async function updateData(data) {
+async function updateData(data, clientIP) {
   try {
     const connection = await mysql.createConnection({
       host: "localhost",
-      user: keys.update.user,
-      password: keys.update.password,
+      user: keys.insert.user,
+      password: keys.insert.password,
       database: "dkacalcu_dka_database",
     });
 
     // Prepare SQL statement for update
-    const sql = `
-      UPDATE tbl_data_v2
-      SET preventableFactors = ?, preExistingDiabetes = ?
-      WHERE auditID = ?
+    const sql = `INSERT INTO tbl_update_v2 (
+        auditID, preExistingDiabetes, preventableFactors, clientUseragent, clientIP, appVersion
+      ) VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     // Execute SQL statement
     const [result] = await connection.execute(sql, [
-      data.preventableFactors,
-      data.preExistingDiabetes,
       data.auditID,
+      data.preExistingDiabetes,
+      data.preventableFactors,
+      data.clientUseragent,
+      clientIP,
+      data.appVersion,
     ]);
 
     if (result.affectedRows === 0) {

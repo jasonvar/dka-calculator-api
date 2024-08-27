@@ -178,8 +178,11 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
       return;
     }
 
+    //get the IP address of the client request
+    const clientIP = req.ip;
+
     //update the database with new data
-    await updateData(data);
+    await updateData(data, clientIP);
 
     res.json("Audit data update complete");
   } catch (error) {
