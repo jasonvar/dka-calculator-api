@@ -30,10 +30,10 @@ async function insertCalculateData(
     // Prepare SQL statement
     const sql = `
       INSERT INTO tbl_data_v2 (
-        legalAgreement, patientAge, patientSex, protocolStartDatetime, pH, bicarbonate, glucose, ketones, weight, weightLimitOverride,
+        legalAgreement, patientAge, patientSex, protocolStartDatetime, pH, bicarbonate, glucose, ketones, weight, weightLimitOverride, use2SD,
         shockPresent, insulinRate, preExistingDiabetes, insulinDeliveryMethod, episodeType, region, centre, ethnicGroup, ethnicSubgroup,
         preventableFactors, imdDecile, auditID, patientHash, clientDatetime, clientUseragent, clientIP, appVersion, calculations
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     // Execute SQL statement
@@ -48,6 +48,7 @@ async function insertCalculateData(
       data.ketones,
       data.weight,
       data.weightLimitOverride,
+      data.use2SD,
       data.shockPresent,
       data.insulinRate,
       data.preExistingDiabetes,

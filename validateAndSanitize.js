@@ -195,6 +195,10 @@ const calculateRules = [
     .isBoolean()
     .withMessage("Weight limit override field must be data type [boolean]."),
 
+  check("use2SD")
+    .isBoolean()
+    .withMessage("Used 2SD weight function field must be data type [boolean]."),
+
   check("shockPresent")
     .isBoolean()
     .withMessage("Clinical shock status field must be data type [boolean]."),
