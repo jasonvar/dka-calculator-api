@@ -1,4 +1,4 @@
-const config = require("./config.json");
+const config = require("../config.json");
 
 /**
  * Performs calculations based on patient data to determine protocol parameters.

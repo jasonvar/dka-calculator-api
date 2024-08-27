@@ -1,5 +1,5 @@
 const { check, body, validationResult } = require("express-validator");
-const config = require("./config.json");
+const config = require("../config.json");
 
 /**
  * Validation rules for the calculate route.

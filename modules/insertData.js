@@ -1,5 +1,5 @@
 const mysql = require("mysql2/promise");
-const keys = require("./private/keys.json");
+const keys = require("../private/keys.json");
 
 /**
  * Inserts audit data into the database.

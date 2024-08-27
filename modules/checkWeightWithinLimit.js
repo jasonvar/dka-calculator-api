@@ -1,4 +1,4 @@
-const config = require("./config.json");
+const config = require("../config.json");
 
 /**
  * Checks if the patient's weight is within the acceptable limits based on their sex and age.
