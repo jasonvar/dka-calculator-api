@@ -69,7 +69,7 @@ const calculateVariables = (data) => {
     };
     const val = calculateVal();
 
-    const formula = `pH [>=${config.severity.mild.pHRange.lower} and <${config.severity.mild.pHRange.upper}] or bicarbonate [<${config.severity.mild.bicarbonateBelow}mmol/L] ==> mild<br>pH [>=${config.severity.moderate.pHRange.lower} and <${config.severity.mild.pHRange.upper}] or bicarbonate [<${config.severity.moderate.bicarbonateBelow}mmol/L] ==> moderate<br>pH [>=${config.severity.severe.pHRange.lower} and <${config.severity.severe.pHRange.lower}] or bicarbonate [<${config.severity.severe.bicarbonateBelow}mmol/L] ==> severe<br>(if bicarbonate and pH return different severity levels, most severe option is used)`;
+    const formula = `pH [>=${config.severity.mild.pHRange.lower} and <${config.severity.mild.pHRange.upper}] or bicarbonate [<${config.severity.mild.bicarbonateBelow}mmol/L] ==> mild<br>pH [>=${config.severity.moderate.pHRange.lower} and <${config.severity.moderate.pHRange.upper}] or bicarbonate [<${config.severity.moderate.bicarbonateBelow}mmol/L] ==> moderate<br>pH [>=${config.severity.severe.pHRange.lower} and <${config.severity.severe.pHRange.upper}] or bicarbonate [<${config.severity.severe.bicarbonateBelow}mmol/L] ==> severe<br>(if bicarbonate and pH return different severity levels, most severe option is used)`;
 
     /**
      * Generates a string showing the working used to find the severity level.
@@ -172,7 +172,7 @@ const calculateVariables = (data) => {
        * @returns {string} - The formula for determining deficit percentage.
        */
       const calculateFormula = () =>
-        `Severity [mild] ==> ${config.severity.mild.deficitPercentage}%<br>Severity [moderate] ==> ${config.severity.moderate.deficitPercentage}<br>Severity [severe] ==> ${config.severity.severe.deficitPercentage}%`;
+        `Severity [mild] ==> ${config.severity.mild.deficitPercentage}%<br>Severity [moderate] ==> ${config.severity.moderate.deficitPercentage}%<br>Severity [severe] ==> ${config.severity.severe.deficitPercentage}%`;
 
       /**
        * Shows the working calculation for the deficit percentage.

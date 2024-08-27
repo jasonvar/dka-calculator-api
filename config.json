@@ -51,7 +51,7 @@
       "withinFutureHours": 1
     },
     "pH": {
-      "min": 6.5,
+      "min": 6.0,
       "max": 7.5
     },
     "bicarbonate": {
