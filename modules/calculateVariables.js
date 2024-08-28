@@ -525,7 +525,7 @@ const calculateVariables = (data) => {
     // Check if the uncapped glucose bolus volume exceeds the cap.
     const isCapped = uncapped > cap;
 
-    // Calculate the Glucose bolus volume to use, selecting between capped or uncapped volumes.
+    // Calculate the glucose bolus volume to use, selecting between capped or uncapped volumes.
     const val = isCapped ? cap : uncapped;
 
     // Generate string showing the formula used to calculate the glucose bolus volume.
