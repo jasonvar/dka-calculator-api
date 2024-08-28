@@ -377,3 +377,25 @@ const validateRequest = (req, res, next) => {
 };
 
 module.exports = { calculateRules, updateRules, validateRequest };
+
+// check Sodium
+
+check("Sodium")
+.isFloat({
+  min: config.validation.Sodium.min,
+  max: config.validation.Sodium.max,
+})
+.withMessage("Sodium value must be data type [float].")
+.isfixed(1)
+.withMessage("Sodium value must be entered to 1 decimal place.")
+
+// check Glucose 
+
+check("Glucose")
+.isFloat({
+  min: config.validation.Glucose.min,
+  max: config.validation.Glucose.max,
+})
+.withMessage("Glucose value must be data type [float].")
+.isfixed(1)
+.withMessage("Glucose value must be entered to 1 decimal place.")
