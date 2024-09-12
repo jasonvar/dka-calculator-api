@@ -65,9 +65,9 @@
     "ketones": {
       "min": 3
     },
-    "Sodium": {
-      "min" : 100,
-      "max" : 200
+    "sodium": {
+      "min": 100,
+      "max": 200
     },
     "weight": {
       "min": 2,

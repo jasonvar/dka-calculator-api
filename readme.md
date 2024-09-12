@@ -133,3 +133,19 @@ Accepts a POST request with a single parameter `data` as a JSON encoded string w
 The API responds to valid requests with a string: `Audit data update complete`
 
 If the call is invalid a JSON object is returned with an array of errors.
+
+#### /sodium-osmo
+
+##### Request
+
+Accepts a POST request with a single parameter `data` as a JSON encoded string with the following properties:
+
+- **glucose** float | optional | accepted values: `min: 3` `max: 50`,
+- **sodium** float | optional | accepted values: `min: 100` `max: 200`,
+
+##### Response
+
+The API responds to valid requests with a object as a JSON encoded string with the following properties:
+
+- **correctedSodium** number | the calculated value for corrected sodium
+- **effectiveOsmolality** number | the calculated value for effective osmolality

@@ -7,6 +7,7 @@ const {
   validateRequest,
   updateRules,
   calculateRules,
+  sodiumOsmoRules,
 } = require("./modules/validateAndSanitize");
 const keys = require("./private/keys.json");
 
@@ -194,6 +195,35 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
 });
 
 /**
+ * Secondary route - for calculating corrected sodium and effective osmolality.
+ * @name POST /update
+ * @function
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+app.post("/sodium-osmo", sodiumOsmoRules, validateRequest, async (req, res) => {
+  try {
+    const {
+      calculateCorrectedSodium,
+      calculateEffectiveOsmolality,
+    } = require("./modules/sodiumOsmo");
+
+    const data = matchedData(req);
+
+    res.status(200).json({
+      correctedSodium: calculateCorrectedSodium(data.sodium, data.glucose),
+      effectiveOsmolality: calculateEffectiveOsmolality(
+        data.sodium,
+        data.glucose
+      ),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
+
+/**
  * Default route for handling incorrect API routes.
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
@@ -208,30 +238,4 @@ app.use("*", (req, res) => {
  */
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
-});
-
-/// Sodium Route
-app.post("/Sodium", SodiumRules, validateRequest, async (req, res) => {
-  const { calculateCorrectedSodium } = require("./modules/CorrNa-EffOsm");
-  
-  try {
-    // Assuming req.body contains the data needed for the calculation
-    const result = calculateCorrectedSodium(req.body);
-    res.status(200).json({ correctedSodium: result });
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred while calculating sodium" });
-  }
-}); 
-
-// Osmolality Route
-app.post("/Osmolality", OsmolalityRules, validateRequest, async (req, res) => {
-  const { calculatedEffectiveOsmolality } = require("./modules/CorrNa-EffOsm");
-
-  try {
-    // Assuming req.body contains the data needed for the calculation
-    const result = calculatedEffectiveOsmolality(req.body);
-    res.status(200).json({ effectiveOsmolality: result });
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred while calculating osmolality" });
-  }
 });

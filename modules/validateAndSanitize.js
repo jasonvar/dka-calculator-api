@@ -367,6 +367,22 @@ const updateRules = [
     .escape(),
 ];
 
+const sodiumOsmoRules = [
+  check("sodium")
+    .isFloat({
+      min: config.validation.sodium.min,
+      max: config.validation.sodium.max,
+    })
+    .withMessage("Sodium value must be data type [float]."),
+
+  check("glucose")
+    .isFloat({
+      min: config.validation.glucose.min,
+      max: config.validation.glucose.max,
+    })
+    .withMessage("Glucose value must be data type [float]."),
+];
+
 // Middleware function to validate the request
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
@@ -376,26 +392,9 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-module.exports = { calculateRules, updateRules, validateRequest };
-
-// check Sodium
-
-check("Sodium")
-.isFloat({
-  min: config.validation.Sodium.min,
-  max: config.validation.Sodium.max,
-})
-.withMessage("Sodium value must be data type [float].")
-.isfixed(1)
-.withMessage("Sodium value must be entered to 1 decimal place.")
-
-// check Glucose 
-
-check("Glucose")
-.isFloat({
-  min: config.validation.Glucose.min,
-  max: config.validation.Glucose.max,
-})
-.withMessage("Glucose value must be data type [float].")
-.isfixed(1)
-.withMessage("Glucose value must be entered to 1 decimal place.")
+module.exports = {
+  calculateRules,
+  updateRules,
+  sodiumOsmoRules,
+  validateRequest,
+};
