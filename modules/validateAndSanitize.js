@@ -329,6 +329,34 @@ const updateRules = [
     .isLength({ min: 64, max: 64 })
     .withMessage("Patient hash field must be exactly 64 characters in length."),
 
+  check("protocolEndDatetime")
+    .isISO8601() // Validates the input as an ISO 8601 date
+    .withMessage("Protocol end datetime must be ISO8601 date format.")
+    .bail()
+    .custom((value) => {
+      const datetime = new Date(value);
+      const now = new Date();
+      const minDatetime = new Date();
+      minDatetime.setFullYear(
+        minDatetime.getFullYear() -
+          config.validation.protocolEndDatetime.withinPastYears
+      );
+
+      if (datetime < minDatetime) {
+        throw new Error(
+          `Protocol end datetime must be within the last ${config.validation.protocolEndDatetime.withinPastYears} years.`
+        );
+      }
+
+      const maxDatetime = new Date(now.getTime());
+
+      if (datetime > maxDatetime) {
+        throw new Error(`Protocol end datetime cannot be in the future.`);
+      }
+
+      return true;
+    }),
+
   check("preExistingDiabetes")
     .isBoolean()
     .withMessage(
@@ -346,6 +374,34 @@ const updateRules = [
     )
     .withMessage(
       "Each preventable factor must be data type [string], containing alphanumeric characters and forward slash only."
+    ),
+
+  check("cerebralOedemaConcern")
+    .isBoolean()
+    .withMessage(
+      "Concern of cerebral oedema concern field must be data type [boolean]."
+    ),
+
+  check("cerebralOedemaImaging")
+    .if(body("cerebralOedemaConcern").equals("true"))
+    .isString()
+    .withMessage("Cerebral oedema imaging field must be data type [string].")
+    .bail()
+    .custom((value) => ["true", "false", "n/a"].includes(value))
+    .withMessage("Cerebral oedema imaging must be true, false or n/a."),
+
+  check("cerebralOedemaTreatment")
+    .if(body("cerebralOedemaConcern").equals("true"))
+    .isArray()
+    .withMessage("Cerebral oedema treatment field must be data type [array].")
+    .bail()
+    .custom((array) =>
+      array.every(
+        (item) => typeof item === "string" && /^[a-zA-Z0-9 /]+$/.test(item)
+      )
+    )
+    .withMessage(
+      "Each cerebral oedema treatment option must be data type [string], containing alphanumeric characters and forward slash only."
     ),
 
   check("appVersion")

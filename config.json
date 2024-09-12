@@ -84,6 +84,9 @@
     },
     "auditID": {
       "length": 6
+    },
+    "protocolEndDatetime": {
+      "withinPastYears": 1
     }
   },
   "severity": {

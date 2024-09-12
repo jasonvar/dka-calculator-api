@@ -184,8 +184,15 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
     //get the IP address of the client request
     const clientIP = req.ip;
 
+    //build the cerebralOedema object
+    const cerebralOedema = {
+      concern: data.cerebralOedemaConcern,
+      imaging: data.cerebralOedemaImaging,
+      treatment: data.cerebralOedemaTreatment,
+    };
+
     //update the database with new data
-    await updateData(data, clientIP);
+    await updateData(data, cerebralOedema, clientIP);
 
     res.json("Audit data update complete");
   } catch (error) {
