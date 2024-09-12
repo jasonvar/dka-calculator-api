@@ -129,7 +129,48 @@ async function updateData(data, clientIP) {
   }
 }
 
+async function insertSodiumOsmoData(data, calculations, clientIP) {
+  try {
+    const connection = await mysql.createConnection({
+      host: "localhost",
+      user: keys.insert.user,
+      password: keys.insert.password,
+      database: "dkacalcu_dka_database",
+    });
+
+    // Prepare SQL statement for update
+    const sql = `INSERT INTO tbl_sodiumOsmo_v2 (
+        sodium, glucose, calculations, clientUseragent, clientIP, appVersion
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    // Execute SQL statement
+    const [result] = await connection.execute(sql, [
+      data.sodium,
+      data.glucose,
+      calculations,
+      data.clientUseragent,
+      clientIP,
+      data.appVersion,
+    ]);
+
+    if (result.affectedRows === 0) {
+      throw new Error("Data log could not be updated: No rows affected");
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error(`Data log could not be updated: ${error.message}`);
+  } finally {
+    try {
+      await connection.end();
+    } catch {
+      //no connection to close
+    }
+  }
+}
+
 module.exports = {
   insertCalculateData,
   updateData,
+  insertSodiumOsmoData,
 };

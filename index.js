@@ -207,16 +207,27 @@ app.post("/sodium-osmo", sodiumOsmoRules, validateRequest, async (req, res) => {
       calculateCorrectedSodium,
       calculateEffectiveOsmolality,
     } = require("./modules/sodiumOsmo");
+    const { insertSodiumOsmoData } = require("./modules/insertData");
 
     const data = matchedData(req);
 
-    res.status(200).json({
+    //get the IP address of the client request
+    const clientIP = req.ip;
+
+    //perform the calculations
+    const calculations = {
       correctedSodium: calculateCorrectedSodium(data.sodium, data.glucose),
       effectiveOsmolality: calculateEffectiveOsmolality(
         data.sodium,
         data.glucose
       ),
-    });
+    };
+
+    //update the database with new data
+    await insertSodiumOsmoData(data, calculations, clientIP);
+
+    //return the calculations to the client
+    res.status(200).json(calculations);
   } catch (error) {
     console.error(error);
     res.status(500).json(error.message);

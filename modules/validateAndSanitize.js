@@ -399,6 +399,24 @@ const sodiumOsmoRules = [
     .withMessage(
       `Glucose value must be between ${config.validation.glucose.min} and ${config.validation.glucose.max} mmol/L.`
     ),
+
+  check("clientUseragent")
+    .isString()
+    .withMessage("Client useragent field must be data type [string].")
+    .escape(),
+
+  check("appVersion")
+    .isObject()
+    .withMessage("App version field must be data type [object].")
+    .bail()
+    .custom((obj) =>
+      Object.values(obj).every(
+        (value) => typeof value === "string" && /^[a-zA-Z0-9 .]+$/.test(value)
+      )
+    )
+    .withMessage(
+      "Each app version property value must be data type [string], containing stop and alphanumeric characters only."
+    ),
 ];
 
 // Middleware function to validate the request
