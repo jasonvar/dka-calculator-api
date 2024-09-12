@@ -369,18 +369,36 @@ const updateRules = [
 
 const sodiumOsmoRules = [
   check("sodium")
+    .custom((value) => {
+      //use custom validator as isFloat will accept numbers with string datatype
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error("Sodium value must be data type [float].");
+      }
+      return true;
+    })
     .isFloat({
       min: config.validation.sodium.min,
       max: config.validation.sodium.max,
     })
-    .withMessage("Sodium value must be data type [float]."),
+    .withMessage(
+      `Sodium value must be between ${config.validation.sodium.min} and ${config.validation.sodium.max} mmol/L.`
+    ),
 
   check("glucose")
+    .custom((value) => {
+      //use custom validator as isFloat will accept numbers with string datatype
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error("Glucose value must be data type [float].");
+      }
+      return true;
+    })
     .isFloat({
       min: config.validation.glucose.min,
       max: config.validation.glucose.max,
     })
-    .withMessage("Glucose value must be data type [float]."),
+    .withMessage(
+      `Glucose value must be between ${config.validation.glucose.min} and ${config.validation.glucose.max} mmol/L.`
+    ),
 ];
 
 // Middleware function to validate the request

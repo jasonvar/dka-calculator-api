@@ -147,5 +147,13 @@ Accepts a POST request with a single parameter `data` as a JSON encoded string w
 
 The API responds to valid requests with a object as a JSON encoded string with the following properties:
 
-- **correctedSodium** number | the calculated value for corrected sodium
-- **effectiveOsmolality** number | the calculated value for effective osmolality
+- **correctedSodium** object:
+
+  - **val** string | the calculated value for corrected sodium formatted as a string to 1 decimal place
+  - **formula** string | the forumla used to perform the calculation
+  - **working** string | the formula with provided variables and output
+
+- **effectiveOsmolality** object:
+  - **val** string | the calculated value for effective osmolality formatted as a string to 1 decimal place
+  - **formula** string | the forumla used to perform the calculation
+  - **working** string | the formula with provided variables and output
