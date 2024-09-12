@@ -125,8 +125,14 @@ Accepts a POST request with a single parameter `data` as a JSON encoded string w
 
 - **auditID** string | required | accepted values: `alphanumeric of length 6`
 - **patientHash** string | required | accepted values: `SHA-256 output hash`
+- **protocolEndDatetime** datetime object | required | accepted values: `within last 1 year`
 - **preExistingDiabetes** boolean | required | accepted values: `any`
 - **preventableFactors** array | required | accepted values: array of strings of minimum length 1 (expected contents of array per list in dka-calculator/src/assets/data.js but not validated)
+- **cerebralOedemaConcerns** boolean | required | accepted values: `any`
+- **cerebralOedemaImaging** string | required (if cerebralOedemaConcerns is `true`) | accepted values: `true`, `false` or `n/a`
+- **cerebralOedemaTreatment** array | required (if cerebralOedemaConcerns is `true`) | accepted values: array of strings of minimum length 1 (expected contents of array per options on update page but not validated)
+- **clientUseragent** string | required | accepted values: `any` (expected client navigator.userAgent but not validated)
+- **appVersion** string | required | accepted values: `any` (expected per value in dka-calculator/src/assets/config.js but not validated)
 
 ##### Response
 
@@ -142,6 +148,8 @@ Accepts a POST request with a single parameter `data` as a JSON encoded string w
 
 - **glucose** float | optional | accepted values: `min: 3` `max: 50`,
 - **sodium** float | optional | accepted values: `min: 100` `max: 200`,
+- **clientUseragent** string | required | accepted values: `any` (expected client navigator.userAgent but not validated)
+- **appVersion** string | required | accepted values: `any` (expected per value in dka-calculator/src/assets/config.js but not validated)
 
 ##### Response
 
