@@ -367,6 +367,22 @@ const updateRules = [
     .escape(),
 ];
 
+const sodiumOsmoRules = [
+  check("sodium")
+    .isFloat({
+      min: config.validation.sodium.min,
+      max: config.validation.sodium.max,
+    })
+    .withMessage("Sodium value must be data type [float]."),
+
+  check("glucose")
+    .isFloat({
+      min: config.validation.glucose.min,
+      max: config.validation.glucose.max,
+    })
+    .withMessage("Glucose value must be data type [float]."),
+];
+
 // Middleware function to validate the request
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
@@ -376,4 +392,9 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-module.exports = { calculateRules, updateRules, validateRequest };
+module.exports = {
+  calculateRules,
+  updateRules,
+  sodiumOsmoRules,
+  validateRequest,
+};

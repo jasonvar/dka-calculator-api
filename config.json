@@ -65,6 +65,10 @@
     "ketones": {
       "min": 3
     },
+    "sodium": {
+      "min": 100,
+      "max": 200
+    },
     "weight": {
       "min": 2,
       "max": 150
@@ -86,7 +90,7 @@
     "severe": {
       "pHRange": {
         "upper": 7.1,
-        "lower": 6.5
+        "lower": 6.0
       },
       "bicarbonateBelow": 5,
       "deficitPercentage": 10

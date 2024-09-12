@@ -7,6 +7,7 @@ const {
   validateRequest,
   updateRules,
   calculateRules,
+  sodiumOsmoRules,
 } = require("./modules/validateAndSanitize");
 const keys = require("./private/keys.json");
 
@@ -187,6 +188,35 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
     await updateData(data, clientIP);
 
     res.json("Audit data update complete");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
+
+/**
+ * Secondary route - for calculating corrected sodium and effective osmolality.
+ * @name POST /update
+ * @function
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+app.post("/sodium-osmo", sodiumOsmoRules, validateRequest, async (req, res) => {
+  try {
+    const {
+      calculateCorrectedSodium,
+      calculateEffectiveOsmolality,
+    } = require("./modules/sodiumOsmo");
+
+    const data = matchedData(req);
+
+    res.status(200).json({
+      correctedSodium: calculateCorrectedSodium(data.sodium, data.glucose),
+      effectiveOsmolality: calculateEffectiveOsmolality(
+        data.sodium,
+        data.glucose
+      ),
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json(error.message);
