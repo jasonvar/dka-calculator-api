@@ -133,7 +133,7 @@ app.post("/calculate", calculateRules, validateRequest, async (req, res) => {
  */
 app.post("/update", updateRules, validateRequest, async (req, res) => {
   try {
-    const { updateData } = require("./modules/insertData");
+    const { insertUpdateData } = require("./modules/insertData");
     const { updateCheck } = require("./modules/updateCheck");
 
     //get the submitted data that passed validation
@@ -192,7 +192,7 @@ app.post("/update", updateRules, validateRequest, async (req, res) => {
     };
 
     //update the database with new data
-    await updateData(data, cerebralOedema, clientIP);
+    await insertUpdateData(data, cerebralOedema, clientIP);
 
     res.json("Audit data update complete");
   } catch (error) {

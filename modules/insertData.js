@@ -89,7 +89,7 @@ async function insertCalculateData(
  * @param {Object} data - The submitted data including the auditID of the session and the updated preventableFactors array to be inserted.
  * @throws {Error} If an error occurs during the database operation.
  */
-async function updateData(data, cerebralOedema, clientIP) {
+async function insertUpdateData(data, cerebralOedema, clientIP) {
   try {
     const connection = await mysql.createConnection({
       host: "localhost",
