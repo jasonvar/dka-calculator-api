@@ -173,6 +173,6 @@ async function insertSodiumOsmoData(data, calculations, clientIP) {
 
 module.exports = {
   insertCalculateData,
-  updateData,
+  insertUpdateData,
   insertSodiumOsmoData,
 };
